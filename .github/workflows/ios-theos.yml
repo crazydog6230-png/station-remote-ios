@@ -69,6 +69,17 @@ jobs:
           path: build/StationRemote.ipa
           if-no-files-found: error
 
+      - name: Publish IPA to branch
+        if: success()
+        run: |
+          git config user.name "ci"
+          git config user.email "ci@local"
+          git checkout -B ipa
+          cp build/StationRemote.ipa StationRemote.ipa
+          git add StationRemote.ipa
+          git commit -m "StationRemote.ipa"
+          git push -f origin ipa
+
       - name: Annotate errors
         if: failure()
         run: |
