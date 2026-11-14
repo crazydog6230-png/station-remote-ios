@@ -9,8 +9,9 @@ StationRemote_FILES = $(wildcard Sources/*.m)
 StationRemote_FRAMEWORKS = UIKit
 StationRemote_CFLAGS = -fobjc-arc
 StationRemote_LDFLAGS = -Wl,-undefined,dynamic_lookup
-StationRemote_RESOURCE_FILES = index.html legacy.css
+StationRemote_RESOURCE_FILES = index.html legacy.css Info.plist
 
 include $(THEOS_MAKE_PATH)/application.mk
+
 
 

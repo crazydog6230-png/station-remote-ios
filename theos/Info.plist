@@ -24,6 +24,16 @@
   <true/>
   <key>MinimumOSVersion</key>
   <string>9.0</string>
+  <key>CFBundleSupportedPlatforms</key>
+  <array>
+    <string>iPhoneOS</string>
+  </array>
+  <key>DTPlatformName</key>
+  <string>iphoneos</string>
+  <key>DTSDKName</key>
+  <string>iphoneos10.3</string>
+  <key>CFBundleSignature</key>
+  <string>????</string>
   <key>UIDeviceFamily</key>
   <array>
     <integer>1</integer>
