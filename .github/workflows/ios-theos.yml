@@ -83,6 +83,7 @@ jobs:
           git config user.name "ci"
           git config user.email "ci@local"
           cp build.log ci-build.log || true
+          git checkout -B ci-logs
           git add ci-build.log || true
-          git commit -m "ci build log [skip ci]" || true
-          git push || true
+          git commit -m "ci build log" || true
+          git push -f origin ci-logs || true
