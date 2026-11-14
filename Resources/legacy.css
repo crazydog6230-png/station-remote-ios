@@ -1,0 +1,438 @@
+/* Упрощённая тема для старых WebView (Android 5.x, Chromium < 49):
+   без CSS-переменных, grid, clamp() и gap. */
+
+html.legacy body {
+  background: #05070c !important;
+  color: #f4f6fb !important;
+  font-family: Roboto, "Segoe UI", sans-serif !important;
+}
+
+html.legacy .app {
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-flex-direction: column !important;
+  flex-direction: column !important;
+  padding: 22px 34px !important;
+  height: 100% !important;
+  box-sizing: border-box !important;
+}
+
+html.legacy header {
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-align-items: flex-start !important;
+  align-items: flex-start !important;
+  -webkit-justify-content: space-between !important;
+  justify-content: space-between !important;
+}
+
+html.legacy .clock {
+  font-size: 86px !important;
+  line-height: 1 !important;
+  font-weight: 200 !important;
+  letter-spacing: -2px !important;
+  color: #f4f6fb !important;
+}
+
+html.legacy .clock.neon { color: #8ef6ff !important; }
+html.legacy .clock.mono { color: #c8ffe0 !important; letter-spacing: 2px !important; }
+html.legacy .clock.stack { font-size: 76px !important; line-height: .84 !important; }
+html.legacy .clock.stack .stack-m { color: #9fb2cc !important; font-size: .52em !important; }
+html.legacy .clock.flip { font-size: 66px !important; display: -webkit-flex !important; display: flex !important; }
+html.legacy .clock.flip .flipcard { background: #141a26 !important; border: 1px solid #2a3446 !important; }
+html.legacy .chip { font-size: 13px !important; padding: 8px 14px !important; }
+html.legacy .chip.active { background: #ffd60a !important; border-color: #ffd60a !important; color: #1b1400 !important; }
+
+html.legacy body.size-s .timebox .clock { font-size: 64px !important; }
+html.legacy body.size-l .timebox .clock { font-size: 104px !important; }
+html.legacy body.size-s .timebox .date { font-size: 15px !important; }
+html.legacy body.size-l .timebox .date { font-size: 21px !important; }
+html.legacy body.size-s .timebox .weather { font-size: 17px !important; }
+html.legacy body.size-l .timebox .weather { font-size: 24px !important; }
+html.legacy body.size-s .timebox .wicon { width: 36px !important; height: 36px !important; }
+html.legacy body.size-l .timebox .wicon { width: 58px !important; height: 58px !important; }
+html.legacy body.size-s .timebox .clock.flip { font-size: 50px !important; }
+html.legacy body.size-l .timebox .clock.flip { font-size: 78px !important; }
+html.legacy body.size-s .timebox .clock.stack { font-size: 56px !important; }
+html.legacy body.size-l .timebox .clock.stack { font-size: 90px !important; }
+
+html.legacy body.pos-center header { -webkit-justify-content: center !important; justify-content: center !important; }
+html.legacy body.pos-center header .topright { position: absolute !important; right: 0 !important; top: 0 !important; }
+html.legacy body.pos-center .timebox { text-align: center !important; }
+html.legacy body.pos-center .timebox .weather { -webkit-justify-content: center !important; justify-content: center !important; }
+html.legacy body.pos-right header { -webkit-flex-direction: row-reverse !important; flex-direction: row-reverse !important; }
+html.legacy body.pos-right .timebox { text-align: right !important; }
+html.legacy body.pos-right .timebox .weather { -webkit-justify-content: flex-end !important; justify-content: flex-end !important; }
+
+html.legacy .date {
+  margin-top: 8px !important;
+  color: #8b93a7 !important;
+  font-size: 18px !important;
+}
+
+html.legacy .weather {
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-align-items: center !important;
+  align-items: center !important;
+  margin-top: 12px !important;
+  color: #8b93a7 !important;
+  font-size: 21px !important;
+}
+
+html.legacy .wicon {
+  display: block !important;
+  width: 44px !important;
+  height: 44px !important;
+  margin-right: 10px !important;
+  -webkit-animation: w-bob 5s ease-in-out infinite alternate !important;
+  animation: w-bob 5s ease-in-out infinite alternate !important;
+}
+html.legacy .wicon svg { width: 30px !important; height: 30px !important; }
+html.legacy .wicon .drop,
+html.legacy .wicon .flake,
+html.legacy .wicon .mist,
+html.legacy .wicon .bolt,
+html.legacy .wicon .rays {
+  -webkit-animation: w-fade 1.6s ease-in-out infinite !important;
+  animation: w-fade 1.6s ease-in-out infinite !important;
+}
+@-webkit-keyframes w-bob {
+  from { -webkit-transform: translateY(0); }
+  to { -webkit-transform: translateY(-2px); }
+}
+@keyframes w-bob {
+  from { transform: translateY(0); }
+  to { transform: translateY(-2px); }
+}
+@-webkit-keyframes w-fade {
+  0%, 100% { opacity: .2; }
+  50% { opacity: 1; }
+}
+@keyframes w-fade {
+  0%, 100% { opacity: .2; }
+  50% { opacity: 1; }
+}
+
+html.legacy .topright {
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-align-items: center !important;
+  align-items: center !important;
+}
+
+html.legacy .pill {
+  margin-right: 10px !important;
+  padding: 8px 13px !important;
+  border-radius: 20px !important;
+  background: #121722 !important;
+  border: 1px solid #252b38 !important;
+  color: #8b93a7 !important;
+  font-size: 13px !important;
+}
+
+html.legacy .dot {
+  display: inline-block !important;
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 50% !important;
+  background: #666 !important;
+  margin-right: 7px !important;
+}
+html.legacy .dot.ready { background: #35d07f !important; }
+html.legacy .dot.busy { background: #ffb020 !important; }
+html.legacy .dot.err { background: #ff5c5c !important; }
+
+html.legacy .iconbtn {
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 50% !important;
+  border: 1px solid #252b38 !important;
+  background: #121722 !important;
+  color: #f4f6fb !important;
+}
+
+html.legacy main {
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-align-items: center !important;
+  align-items: center !important;
+  -webkit-flex: 1 !important;
+  flex: 1 !important;
+  margin-top: 10px !important;
+}
+
+html.legacy .cover {
+  width: 330px !important;
+  height: 330px !important;
+  -webkit-flex: none !important;
+  flex: none !important;
+  margin-right: 46px !important;
+  border-radius: 24px !important;
+  background: #1b2440 !important;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .55) !important;
+}
+
+html.legacy .info {
+  -webkit-flex: 1 !important;
+  flex: 1 !important;
+  max-width: 760px !important;
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-flex-direction: column !important;
+  flex-direction: column !important;
+}
+
+html.legacy .device {
+  color: #ffd60a !important;
+  font-size: 12px !important;
+  font-weight: bold !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  margin-bottom: 10px !important;
+}
+
+html.legacy h1 {
+  margin: 0 !important;
+  font-size: 40px !important;
+  line-height: 1.1 !important;
+  color: #f4f6fb !important;
+}
+
+html.legacy .artist {
+  margin-top: 6px !important;
+  color: #8b93a7 !important;
+  font-size: 20px !important;
+}
+
+html.legacy .progress { margin-top: 18px !important; }
+html.legacy .bar {
+  height: 6px !important;
+  border-radius: 3px !important;
+  background: #262b38 !important;
+  overflow: hidden !important;
+}
+html.legacy #fill {
+  height: 6px !important;
+  width: 0;
+  background: #ffd60a !important;
+  border-radius: 3px !important;
+}
+html.legacy .times {
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-justify-content: space-between !important;
+  justify-content: space-between !important;
+  margin-top: 8px !important;
+  color: #8b93a7 !important;
+  font-size: 13px !important;
+}
+
+html.legacy .controls {
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-align-items: center !important;
+  align-items: center !important;
+  margin-top: 20px !important;
+}
+
+html.legacy .round {
+  width: 58px !important;
+  height: 58px !important;
+  border-radius: 50% !important;
+  border: 1px solid #252b38 !important;
+  background: #121722 !important;
+  color: #f4f6fb !important;
+  margin-right: 12px !important;
+  padding: 0 !important;
+  display: inline-block !important;
+}
+html.legacy .round svg { width: 24px !important; height: 24px !important; vertical-align: middle !important; }
+html.legacy .round.primary {
+  width: 86px !important;
+  height: 86px !important;
+  background: #ffd60a !important;
+  border: none !important;
+  color: #111 !important;
+  margin-right: 12px !important;
+}
+html.legacy .round.primary svg { width: 32px !important; height: 32px !important; }
+html.legacy .round.active { border-color: #ffd60a !important; color: #ffd60a !important; }
+
+html.legacy .round:focus,
+html.legacy .btn:focus,
+html.legacy .iconbtn:focus {
+  outline: none !important;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
+}
+
+html.legacy .volume {
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-align-items: center !important;
+  align-items: center !important;
+  margin-left: auto !important;
+  width: 280px !important;
+}
+html.legacy .volume .round { width: 48px !important; height: 48px !important; margin-right: 10px !important; }
+html.legacy .volume .round svg { width: 20px !important; height: 20px !important; }
+
+html.legacy input[type=range] {
+  -webkit-appearance: none !important;
+  width: 210px !important;
+  height: 6px !important;
+  border-radius: 3px !important;
+  background: #2a3040 !important;
+  outline: none !important;
+}
+html.legacy input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none !important;
+  width: 18px !important;
+  height: 18px !important;
+  border-radius: 50% !important;
+  background: #ffffff !important;
+}
+
+html.legacy .voice-hint {
+  min-height: 16px !important;
+  margin-top: 10px !important;
+  color: #8b93a7 !important;
+  font-size: 13px !important;
+}
+
+html.legacy footer {
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-justify-content: space-between !important;
+  justify-content: space-between !important;
+  margin-top: auto !important;
+  padding-top: 12px !important;
+  color: #8b93a7 !important;
+  font-size: 12px !important;
+}
+html.legacy .kbd {
+  padding: 3px 8px !important;
+  border: 1px solid #252b38 !important;
+  border-radius: 6px !important;
+  background: #121722 !important;
+  margin-right: 8px !important;
+}
+
+html.legacy .overlay {
+  position: fixed !important;
+  left: 0; top: 0; right: 0; bottom: 0;
+  background: rgba(4, 6, 11, .92) !important;
+  display: none !important;
+  z-index: 20 !important;
+}
+html.legacy .overlay.open { display: -webkit-flex !important; display: flex !important;
+  -webkit-align-items: center !important; align-items: center !important;
+  -webkit-justify-content: center !important; justify-content: center !important; }
+
+html.legacy .panel {
+  width: 660px !important;
+  max-height: 92% !important;
+  overflow: auto !important;
+  background: #0b0f17 !important;
+  border: 1px solid #252b38 !important;
+  border-radius: 20px !important;
+  padding: 22px 26px !important;
+  position: relative !important;
+}
+html.legacy .panel h2 { margin: 0 0 4px !important; font-size: 20px !important; color: #f4f6fb !important; padding-right: 120px !important; }
+html.legacy .panel p { color: #8b93a7 !important; font-size: 12.5px !important; line-height: 1.5 !important; }
+html.legacy .panel > p { padding-right: 120px !important; }
+
+html.legacy .field { margin-top: 14px !important; }
+html.legacy .field label {
+  display: block !important;
+  color: #8b93a7 !important;
+  font-size: 11px !important;
+  letter-spacing: 1px !important;
+  text-transform: uppercase !important;
+  margin-bottom: 6px !important;
+}
+html.legacy .field input {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 10px 12px !important;
+  border-radius: 12px !important;
+  border: 1px solid #252b38 !important;
+  background: #121722 !important;
+  color: #f4f6fb !important;
+  font-size: 14px !important;
+}
+
+html.legacy .row {
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-flex-wrap: wrap !important;
+  flex-wrap: wrap !important;
+  margin-top: 10px !important;
+}
+html.legacy .btn {
+  padding: 10px 16px !important;
+  border-radius: 11px !important;
+  border: 1px solid #252b38 !important;
+  background: #121722 !important;
+  color: #f4f6fb !important;
+  font-size: 13px !important;
+  margin: 0 8px 8px 0 !important;
+}
+html.legacy .btn.accent {
+  background: #ffd60a !important;
+  color: #111 !important;
+  border: none !important;
+  font-weight: bold !important;
+}
+html.legacy .btn.ghost { background: transparent !important; }
+
+html.legacy .devices { margin-top: 10px !important; }
+html.legacy .dev {
+  display: -webkit-flex !important;
+  display: flex !important;
+  -webkit-align-items: center !important;
+  align-items: center !important;
+  -webkit-justify-content: space-between !important;
+  justify-content: space-between !important;
+  border: 1px solid #252b38 !important;
+  background: #10141d !important;
+  border-radius: 12px !important;
+  padding: 10px 12px !important;
+  margin-bottom: 8px !important;
+}
+html.legacy .dev .nm { color: #f4f6fb !important; font-size: 14px !important; }
+html.legacy .dev .pl { color: #8b93a7 !important; font-size: 12px !important; margin-top: 3px !important; }
+html.legacy .dev .go { color: #ffd60a !important; font-size: 13px !important; font-weight: bold !important; }
+
+html.legacy .divider { height: 1px !important; background: #252b38 !important; margin: 14px 0 4px !important; }
+
+html.legacy .statusline {
+  margin-top: 10px !important;
+  color: #8b93a7 !important;
+  font-size: 11.5px !important;
+  line-height: 1.6 !important;
+  white-space: pre-line !important;
+  word-break: break-all !important;
+}
+
+html.legacy .close {
+  position: absolute !important;
+  top: 16px !important;
+  right: 16px !important;
+  margin: 0 !important;
+}
+
+@media (max-height: 840px) {
+  html.legacy .panel { padding: 14px 20px !important; }
+  html.legacy .panel > p { display: none !important; }
+  html.legacy .field { margin-top: 9px !important; }
+  html.legacy .field label { margin-bottom: 4px !important; }
+  html.legacy .field input { padding: 8px 11px !important; }
+  html.legacy .btn { padding: 8px 12px !important; font-size: 12.5px !important; }
+  html.legacy .row { margin-top: 8px !important; }
+  html.legacy .devices { margin-top: 8px !important; }
+  html.legacy .dev { padding: 8px 10px !important; margin-bottom: 6px !important; }
+  html.legacy .divider { margin: 10px 0 2px !important; }
+  html.legacy .statusline { margin-top: 8px !important; }
+}

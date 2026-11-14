@@ -1,0 +1,61 @@
+name: ios-ipa
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: macos-12
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show available Xcode
+        run: ls -d /Applications/Xcode*.app
+
+      - name: Select Xcode 13.x
+        run: |
+          XCODE=$(ls -d /Applications/Xcode_13*.app 2>/dev/null | head -n1)
+          if [ -z "$XCODE" ]; then XCODE=$(ls -d /Applications/Xcode_12*.app 2>/dev/null | head -n1); fi
+          if [ -z "$XCODE" ]; then XCODE=/Applications/Xcode.app; fi
+          echo "Using $XCODE"
+          sudo xcode-select -s "$XCODE"
+          xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Build unsigned app
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -project StationRemote.xcodeproj \
+            -scheme StationRemote \
+            -sdk iphoneos \
+            -configuration Release \
+            -archivePath build/StationRemote.xcarchive \
+            archive \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            ARCHS="armv7 arm64" \
+            ONLY_ACTIVE_ARCH=NO
+
+      - name: Package IPA
+        run: |
+          mkdir -p build/Payload
+          cp -R build/StationRemote.xcarchive/Products/Applications/StationRemote.app build/Payload/
+          cd build
+          zip -r StationRemote.ipa Payload
+          ls -lh StationRemote.ipa
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: StationRemote-ios9
+          path: build/StationRemote.ipa
+          if-no-files-found: error
