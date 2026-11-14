@@ -1,0 +1,42 @@
+name: ios-theos
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Theos
+        uses: Randomblock1/theos-action@v1
+        with:
+          theos-dir: theos-toolchain
+          theos-sdks: https://github.com/theos/sdks
+
+      - name: Build application
+        run: |
+          cd theos
+          make stage
+          find .theos -maxdepth 4 -name "*.app" -print
+
+      - name: Package IPA
+        run: |
+          APP=$(find theos/.theos/_ -maxdepth 4 -name "StationRemote.app" | head -n1)
+          echo "app: $APP"
+          test -n "$APP"
+          mkdir -p build/Payload
+          cp -R "$APP" build/Payload/
+          cd build
+          zip -r StationRemote.ipa Payload
+          ls -lh StationRemote.ipa
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: StationRemote-ios9-theos
+          path: build/StationRemote.ipa
+          if-no-files-found: error

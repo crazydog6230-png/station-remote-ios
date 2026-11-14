@@ -1,0 +1,1183 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Станция</title>
+<style>
+  :root {
+    --bg: #05070c;
+    --text: #f4f6fb;
+    --muted: rgba(244, 246, 251, .52);
+    --line: rgba(255, 255, 255, .09);
+    --panel: rgba(255, 255, 255, .045);
+    --accent: #ffd60a;
+    --accent-2: #ffb300;
+    --ok: #35d07f;
+    --warn: #ffb020;
+    --err: #ff5c5c;
+  }
+  * { -webkit-tap-highlight-color: transparent; }
+  button:focus, input:focus, .round:focus, .iconbtn:focus { outline: none; }
+  html, body {
+    margin: 0; padding: 0; height: 100%; overflow: hidden;
+    background: var(--bg); color: var(--text);
+    font-family: -apple-system, "Roboto", "Segoe UI", system-ui, sans-serif;
+    user-select: none; -webkit-user-select: none;
+  }
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(1100px 760px at 12% -12%, rgba(48, 68, 130, .55) 0%, transparent 62%),
+      radial-gradient(900px 680px at 112% 112%, rgba(96, 36, 92, .45) 0%, transparent 60%),
+      radial-gradient(700px 500px at 78% 8%, rgba(255, 214, 10, .06) 0%, transparent 60%);
+  }
+  /* ---------- weather background ---------- */
+  .sky {
+    position: fixed; left: 0; top: 0; right: 0; bottom: 0;
+    overflow: hidden; pointer-events: none; z-index: 0;
+    opacity: 1;
+  }
+  .sky > div { position: absolute; }
+  .sky .sun, .sky .clouds, .sky .rainbox, .sky .snowbox,
+  .sky .fogbox, .sky .flash { display: none; }
+  .sky.w-sun .sun { display: block; }
+  .sky.w-partly .sun, .sky.w-partly .clouds { display: block; }
+  .sky.w-cloud .clouds { display: block; }
+  .sky.w-rain .clouds, .sky.w-rain .rainbox { display: block; }
+  .sky.w-thunder .clouds, .sky.w-thunder .rainbox, .sky.w-thunder .flash { display: block; }
+  .sky.w-snow .clouds, .sky.w-snow .snowbox { display: block; }
+  .sky.w-fog .fogbox { display: block; }
+
+  .sun {
+    width: 50vmax; height: 50vmax; right: -13vmax; top: -17vmax;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 214, 10, .40) 0%, rgba(255, 176, 0, .16) 38%, rgba(255, 176, 0, 0) 68%);
+    animation: skySun 9s ease-in-out infinite;
+  }
+  @keyframes skySun {
+    50% { transform: scale(1.07); opacity: .82; }
+  }
+
+  .cloud {
+    position: absolute;
+    width: 58vmax; height: 24vmax; border-radius: 50%;
+    background: radial-gradient(ellipse at center,
+      rgba(255, 255, 255, .22) 0%,
+      rgba(255, 255, 255, .09) 52%,
+      rgba(255, 255, 255, 0) 72%);
+    animation: skyDrift linear infinite;
+  }
+  .c1 { top: 2%; left: -60vmax; animation-duration: 110s; }
+  .c2 { top: 22%; left: -70vmax; animation-duration: 150s; animation-direction: reverse; opacity: .8; }
+  .c3 { top: 46%; left: -65vmax; animation-duration: 190s; opacity: .65; }
+  @keyframes skyDrift {
+    from { transform: translateX(0); }
+    to { transform: translateX(170vmax); }
+  }
+
+  .rainbox, .snowbox { left: 0; top: 0; right: 0; bottom: 0; }
+  .drop {
+    position: absolute; top: -18vh; width: 1.5px; height: 12vh;
+    background: linear-gradient(180deg, rgba(150, 200, 255, 0), rgba(150, 200, 255, .55));
+    animation: skyFall linear infinite;
+  }
+  @keyframes skyFall {
+    from { transform: translateY(0); }
+    to { transform: translateY(130vh); }
+  }
+  .flake {
+    position: absolute; top: -6vh; width: 5px; height: 5px; border-radius: 50%;
+    background: rgba(240, 248, 255, .85);
+    box-shadow: 0 0 6px rgba(240, 248, 255, .45);
+    animation: skySnow linear infinite;
+  }
+  @keyframes skySnow {
+    from { transform: translate(0, 0); }
+    to { transform: translate(3vw, 112vh); }
+  }
+
+  .fog {
+    left: -25vw; width: 150vw; height: 26vh;
+    background: linear-gradient(90deg,
+      rgba(200, 210, 230, 0) 0%,
+      rgba(200, 210, 230, .14) 45%,
+      rgba(200, 210, 230, 0) 100%);
+    animation: skyFog 26s ease-in-out infinite alternate;
+  }
+  .f1 { top: 18%; animation-duration: 22s; }
+  .f2 { top: 42%; animation-duration: 34s; animation-direction: alternate-reverse; opacity: .7; }
+  @keyframes skyFog {
+    from { transform: translateX(-4vw); opacity: .45; }
+    to { transform: translateX(4vw); opacity: .9; }
+  }
+
+  .flash {
+    left: 0; top: 0; right: 0; bottom: 0;
+    background: #ffffff;
+    opacity: 0;
+    animation: skyFlash 7.5s steps(1, end) infinite;
+  }
+  @keyframes skyFlash {
+    0%, 90%, 100% { opacity: 0; }
+    91% { opacity: .18; }
+    92% { opacity: 0; }
+    93% { opacity: .12; }
+    94% { opacity: 0; }
+  }
+
+  .app {
+    position: relative; z-index: 2; height: 100%; box-sizing: border-box;
+    display: grid; grid-template-rows: auto 1fr auto;
+    padding: clamp(18px, 2.6vh, 34px) clamp(20px, 3.4vw, 56px);
+    gap: clamp(10px, 1.6vh, 22px);
+  }
+  /* ---------- header ---------- */
+  header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+  .clock {
+    font-size: 104px;
+    font-size: clamp(62px, 13vh, 150px); line-height: .92; font-weight: 200;
+    letter-spacing: -.045em; font-variant-numeric: tabular-nums;
+    text-shadow: 0 8px 40px rgba(0, 0, 0, .45);
+  }
+  /* ---------- варианты часов ---------- */
+  .clock.neon {
+    color: #8ef6ff; font-weight: 300; letter-spacing: .01em;
+    text-shadow: 0 0 10px rgba(70, 230, 255, .9), 0 0 34px rgba(0, 150, 255, .55),
+                 0 0 80px rgba(0, 90, 255, .35);
+    animation: neonPulse 4.5s ease-in-out infinite;
+  }
+  @keyframes neonPulse {
+    50% {
+      text-shadow: 0 0 14px rgba(120, 245, 255, 1), 0 0 46px rgba(0, 170, 255, .7),
+                   0 0 110px rgba(0, 110, 255, .45);
+    }
+  }
+  .clock.mono {
+    font-family: "Droid Sans Mono", "Courier New", monospace;
+    font-weight: 400; letter-spacing: .06em; color: #c8ffe0;
+    text-shadow: 0 0 16px rgba(80, 255, 170, .45);
+  }
+  .clock.stack { line-height: .78; letter-spacing: -.05em; }
+  .clock.stack .stack-m {
+    display: block; font-size: .52em; letter-spacing: .02em;
+    color: #9fb2cc; margin-top: .06em;
+  }
+  .clock.flip { display: flex; align-items: center; letter-spacing: 0; margin-bottom: 6px; }
+  .clock.flip .flipcard {
+    display: inline-block; padding: .04em .13em .08em; border-radius: 14px;
+    background: linear-gradient(180deg, #232c3d 0%, #121824 52%, #0b0f17 53%, #161d29 100%);
+    border: 1px solid rgba(255, 255, 255, .14);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .18), 0 12px 30px rgba(0, 0, 0, .5);
+    animation: flipIn .55s ease-out;
+  }
+  .clock.flip .flipsep { padding: 0 .06em; color: #8b9bb4; }
+  @keyframes flipIn {
+    from { transform: rotateX(-88deg); opacity: .2; }
+    to { transform: rotateX(0); opacity: 1; }
+  }
+  /* ---------- размер и положение блока времени ---------- */
+  header { position: relative; }
+  body.pos-center header { -webkit-justify-content: center; justify-content: center; }
+  body.pos-center header .topright { position: absolute; right: 0; top: 0; }
+  body.pos-center .timebox { text-align: center; }
+  body.pos-center .timebox .weather { -webkit-justify-content: center; justify-content: center; }
+  body.pos-right header { -webkit-flex-direction: row-reverse; flex-direction: row-reverse; }
+  body.pos-right .timebox { text-align: right; }
+  body.pos-right .timebox .weather { -webkit-justify-content: flex-end; justify-content: flex-end; }
+
+  body.size-s .timebox .clock { font-size: clamp(44px, 8.4vh, 92px); }
+  body.size-l .timebox .clock { font-size: clamp(78px, 17vh, 190px); }
+  body.size-s .timebox .date { font-size: clamp(13px, 1.7vh, 17px); }
+  body.size-l .timebox .date { font-size: clamp(17px, 2.3vh, 24px); }
+  body.size-s .timebox .weather { font-size: clamp(15px, 2vh, 21px); }
+  body.size-l .timebox .weather { font-size: clamp(20px, 3vh, 32px); }
+  body.size-s .timebox .wicon { width: 48px; height: 48px; }
+  body.size-l .timebox .wicon { width: 78px; height: 78px; }
+  body.size-s .timebox .clock.flip { font-size: clamp(40px, 7vh, 70px); }
+  body.size-l .timebox .clock.flip { font-size: clamp(60px, 11vh, 120px); }
+  body.size-s .timebox .clock.stack { font-size: clamp(40px, 8vh, 80px); }
+  body.size-l .timebox .clock.stack { font-size: clamp(60px, 12vh, 130px); }
+
+  .chips { display: flex; flex-wrap: wrap; margin: -4px; }  .chip {
+    margin: 4px; padding: 9px 16px; border-radius: 999px; cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, .16);
+    background: rgba(255, 255, 255, .05); color: #e6edf7;
+    font: inherit; font-size: 14px;
+  }
+  .chip.active { background: #ffd60a; border-color: #ffd60a; color: #1b1400; font-weight: 600; }
+  .date { margin-top: 8px; color: var(--muted); font-size: clamp(15px, 2vh, 21px); letter-spacing: .02em; }
+  .weather { margin-top: 14px; display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: clamp(17px, 2.4vh, 26px); }
+  .wicon { width: 60px; height: 60px; flex: none; display: block; }
+  .wicon svg { width: 100%; height: 100%; overflow: visible; }
+  .wicon .rays { transform-box: view-box; transform-origin: 12px 12px; animation: w-spin 26s linear infinite; }
+  .wicon .cloud { transform-box: view-box; transform-origin: 12px 12px; animation: w-float 6s ease-in-out infinite alternate; }
+  .wicon .cloud2 { transform-box: view-box; transform-origin: 12px 12px; animation: w-float 8s ease-in-out infinite alternate-reverse; }
+  .wicon .drop { animation: w-drop 1.4s linear infinite; }
+  .wicon .flake { animation: w-fall 3.2s linear infinite; }
+  .wicon .bolt { animation: w-flash 2.6s steps(1, end) infinite; }
+  .wicon .mist { animation: w-mist 7s ease-in-out infinite alternate; }
+  @keyframes w-spin { to { transform: rotate(360deg); } }
+  @keyframes w-float { from { transform: translateY(0); } to { transform: translateY(1.4px); } }
+  @keyframes w-drop {
+    0% { transform: translateY(-1px); opacity: 0; }
+    25% { opacity: 1; }
+    100% { transform: translateY(3.5px); opacity: 0; }
+  }
+  @keyframes w-fall {
+    0% { transform: translateY(-1.5px); opacity: 0; }
+    30% { opacity: 1; }
+    100% { transform: translateY(4px); opacity: 0; }
+  }
+  @keyframes w-flash { 0%, 55%, 100% { opacity: .2; } 60%, 72% { opacity: 1; } }
+  @keyframes w-mist { from { transform: translateX(-1.6px); opacity: .45; } to { transform: translateX(1.6px); opacity: .9; } }
+  .topright { display: flex; align-items: center; gap: 12px; }
+  .pill {
+    display: flex; align-items: center; gap: 9px;
+    padding: 9px 14px; border-radius: 999px;
+    background: var(--panel); border: 1px solid var(--line);
+    font-size: 13px; color: var(--muted); white-space: nowrap;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: #666; box-shadow: 0 0 0 3px rgba(255,255,255,.04); }
+  .dot.ready { background: var(--ok); box-shadow: 0 0 12px rgba(53, 208, 127, .7); }
+  .dot.busy { background: var(--warn); animation: pulse 1.4s infinite; }
+  .dot.err { background: var(--err); }
+  @keyframes pulse { 50% { opacity: .35; } }
+  .iconbtn {
+    width: 46px; height: 46px; border-radius: 50%;
+    border: 1px solid var(--line); background: var(--panel); color: var(--text);
+    display: grid; place-items: center; cursor: pointer;
+    transition: background .2s, transform .12s;
+  }
+  .iconbtn:active { transform: scale(.93); }
+  /* ---------- main ---------- */
+  main {
+    display: grid; grid-template-columns: minmax(220px, 36%) 1fr;
+    gap: clamp(22px, 4vw, 64px); align-items: center; min-height: 0;
+    align-content: center;
+  }
+  .cover {
+    position: relative;
+    width: 360px;
+    width: min(46vh, 44vw, 420px);
+    height: 360px;
+    height: min(46vh, 44vw, 420px);
+    border-radius: clamp(18px, 2.4vw, 30px); overflow: hidden;
+    background: linear-gradient(150deg, #1c2547 0%, #37204a 55%, #151a2c 100%);
+    box-shadow: 0 34px 90px rgba(0, 0, 0, .6), inset 0 0 0 1px rgba(255,255,255,.05);
+    justify-self: start;
+  }
+  .cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: none; }
+  .cover .ph {
+    position: absolute; inset: 0; display: grid; place-items: center;
+    background:
+      radial-gradient(120% 120% at 20% 0%, rgba(255,255,255,.10), transparent 55%),
+      repeating-linear-gradient(135deg, rgba(255,255,255,.028) 0 2px, transparent 2px 8px);
+  }
+  .cover .ph svg { width: 34%; height: 34%; opacity: .28; }
+  .info { display: flex; flex-direction: column; gap: clamp(10px, 1.4vh, 18px); min-width: 0; max-width: 820px; }
+  .device {
+    color: var(--accent); font-size: clamp(11px, 1.35vh, 14px); font-weight: 700;
+    letter-spacing: .16em; text-transform: uppercase; opacity: .92;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  h1 {
+    margin: 0; font-size: clamp(26px, 4.4vh, 50px); line-height: 1.08; font-weight: 700;
+    letter-spacing: -.015em;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .artist {
+    color: var(--muted); font-size: clamp(15px, 2.1vh, 23px);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .progress { margin-top: clamp(2px, .6vh, 10px); }
+  .bar { height: 6px; border-radius: 999px; background: rgba(255,255,255,.12); overflow: hidden; }
+  #fill { height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transition: width .25s linear; }
+  .times { display: flex; justify-content: space-between; margin-top: 9px; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+  .controls { display: flex; align-items: center; gap: clamp(12px, 1.5vw, 22px); margin-top: clamp(4px, 1vh, 12px); }
+  .round {
+    width: 60px; height: 60px;
+    width: clamp(52px, 6.4vh, 72px); height: clamp(52px, 6.4vh, 72px);
+    border-radius: 50%;
+    border: 1px solid var(--line); background: var(--panel); color: var(--text);
+    display: grid; place-items: center; cursor: pointer;
+    transition: transform .1s ease, background .2s ease, border-color .2s;
+  }
+  .round:hover { background: rgba(255,255,255,.08); }
+  .round:active { transform: scale(.93); }
+  .round svg { width: 42%; height: 42%; }
+  .round.primary {
+    width: 88px; height: 88px;
+    width: clamp(72px, 9.2vh, 104px); height: clamp(72px, 9.2vh, 104px); border: none;
+    background: linear-gradient(160deg, #ffe14d, var(--accent) 45%, var(--accent-2));
+    color: #0a0a0a; box-shadow: 0 18px 44px rgba(255, 198, 0, .28), inset 0 0 0 1px rgba(255,255,255,.35);
+  }
+  .round.primary svg { width: 40%; height: 40%; }
+  .round.live {
+    border-color: rgba(255, 214, 10, .65);
+    box-shadow: 0 0 0 2px rgba(255, 214, 10, .22);
+    animation: micpulse 1.5s ease-in-out infinite;
+  }
+  .round.active {
+    border-color: rgba(255, 214, 10, .6);
+    color: var(--accent);
+    background: rgba(255, 214, 10, .08);
+  }
+  @keyframes micpulse {
+    50% { box-shadow: 0 0 0 9px rgba(255, 214, 10, .05); }
+  }
+  .voice-hint { min-height: 16px; margin-top: 2px; color: var(--muted); font-size: 12.5px; letter-spacing: .01em;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .volume { display: flex; align-items: center; gap: 12px; margin-left: clamp(18px, 3vw, 44px); flex: 1; max-width: 300px; min-width: 140px; }
+  .volume .round { width: 48px; height: 48px; width: clamp(44px, 5.2vh, 54px); height: clamp(44px, 5.2vh, 54px); flex: none; }
+  input[type=range] {
+    -webkit-appearance: none; appearance: none; flex: 1; height: 6px; border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent) 0%, var(--accent) var(--v, 50%), rgba(255,255,255,.14) var(--v, 50%));
+    outline: none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%;
+    background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,.55); cursor: pointer;
+  }
+  footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; color: var(--muted); font-size: 12.5px; letter-spacing: .01em; }
+  .hint { display: flex; align-items: center; gap: 8px; }
+  .kbd { padding: 4px 9px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); font-size: 11.5px; }
+  /* ---------- settings ---------- */
+  .overlay {
+    position: fixed; inset: 0; z-index: 20; display: grid; place-items: center;
+    background: rgba(4, 6, 11, .78); backdrop-filter: blur(18px); padding: 20px;
+    opacity: 0; pointer-events: none; transition: opacity .18s ease;
+  }
+  .overlay.open { opacity: 1; pointer-events: auto; }
+  .panel {
+    position: relative;
+    width: min(700px, 94vw); max-height: 90vh; overflow: auto;
+    background: #0b0f17; border: 1px solid var(--line); border-radius: 26px;
+    padding: clamp(20px, 3vw, 32px); box-shadow: 0 40px 120px rgba(0,0,0,.7);
+  }
+  .panel h2 { margin: 0 0 4px; font-size: 22px; letter-spacing: -.01em; padding-right: 130px; }
+  .panel > p { padding-right: 130px; }
+  .panel p { color: var(--muted); font-size: 13.5px; line-height: 1.5; margin: 6px 0 0; }
+  .field { margin-top: 18px; }
+  .field label { display: block; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .field input {
+    width: 100%; box-sizing: border-box; padding: 13px 14px; border-radius: 14px;
+    border: 1px solid var(--line); background: rgba(255,255,255,.04); color: var(--text);
+    font-size: 14px; font-family: ui-monospace, "SF Mono", Consolas, monospace; outline: none;
+  }
+  .field input:focus { border-color: rgba(255, 214, 10, .5); }
+  .row { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+  .btn {
+    padding: 12px 18px; border-radius: 13px; border: 1px solid var(--line);
+    background: rgba(255,255,255,.05); color: var(--text); font-size: 14px; cursor: pointer;
+    transition: background .2s, transform .1s;
+  }
+  .btn:active { transform: scale(.97); }
+  .btn.accent { background: linear-gradient(160deg, #ffe14d, var(--accent)); color: #111; border: none; font-weight: 700; }
+  .btn.ghost { background: transparent; }
+  .devices { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .dev {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 13px 15px; border-radius: 14px; border: 1px solid var(--line);
+    background: rgba(255,255,255,.03); cursor: pointer;
+  }
+  .dev:hover { background: rgba(255,255,255,.06); }
+  .dev .nm { font-size: 14.5px; }
+  .dev .pl { color: var(--muted); font-size: 12px; margin-top: 3px; }
+  .dev .go { color: var(--accent); font-size: 13px; font-weight: 600; }
+  .statusline { margin-top: 16px; font-size: 12.5px; color: var(--muted); line-height: 1.6; font-family: ui-monospace, Consolas, monospace; word-break: break-all; white-space: pre-line; }
+  .divider { height: 1px; background: var(--line); margin: 22px 0 6px; }
+  .close { position: absolute; top: 18px; right: 18px; }
+  @media (max-height: 840px) {
+    .panel { padding: 16px 22px; border-radius: 20px; max-height: calc(100vh - 44px); }
+    .panel > p { display: none; }
+    .panel h2 { font-size: 19px; }
+    .panel p { font-size: 12px; }
+    .field { margin-top: 8px; }
+    .field label { margin-bottom: 4px; font-size: 10.5px; }
+    .field input { padding: 8px 12px; }
+    .btn { padding: 9px 14px; }
+    .row { margin-top: 8px; }
+    .devices { gap: 5px; margin-top: 8px; }
+    .dev { padding: 8px 12px; }
+    .statusline { margin-top: 8px; font-size: 11px; }
+    .divider { margin: 10px 0 2px; }
+  }
+  @media (max-aspect-ratio: 1/1) {
+    main {
+      grid-template-columns: 1fr; grid-template-rows: auto auto;
+      gap: 22px; align-content: center; align-items: center; justify-items: center;
+    }
+    .cover { width: min(30vh, 54vw); height: min(30vh, 54vw); justify-self: center; }
+    .info { width: 100%; max-width: 640px; }
+    .volume { max-width: none; }
+    footer { display: none; }
+  }
+</style>
+<link rel="stylesheet" href="legacy.css">
+<script>
+(function () {
+  var ok = false;
+  try { ok = !!(window.CSS && CSS.supports && CSS.supports("display", "grid")); } catch (e) { }
+  if (!ok || /[?&]legacy=1/.test(location.search)) document.documentElement.className += " legacy";
+})();
+</script>
+</head>
+<body>
+<div class="sky w-none" id="sky">
+  <div class="sun"></div>
+  <div class="clouds">
+    <div class="cloud c1"></div>
+    <div class="cloud c2"></div>
+    <div class="cloud c3"></div>
+  </div>
+  <div class="rainbox" id="rainbox"></div>
+  <div class="snowbox" id="snowbox"></div>
+  <div class="fogbox">
+    <div class="fog f1"></div>
+    <div class="fog f2"></div>
+  </div>
+  <div class="flash"></div>
+</div>
+<div class="app">
+  <header>
+    <div class="timebox">
+      <div class="clock" id="clock">00:00</div>
+      <div class="date" id="date">—</div>
+      <div class="weather" id="weather" style="display:none">
+        <span class="wicon" id="wIco"></span><span id="wText"></span>
+      </div>
+    </div>
+    <div class="topright">
+      <div class="pill"><span class="dot" id="dot"></span><span id="statusText">Запуск…</span></div>
+      <button class="iconbtn" id="gear" aria-label="Настройки">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <div class="cover">
+      <div class="ph" id="ph">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 18V6l10-2v12"></path>
+          <circle cx="6.5" cy="18" r="2.5"></circle>
+          <circle cx="16.5" cy="16" r="2.5"></circle>
+        </svg>
+      </div>
+      <img id="cover" alt="">
+    </div>
+
+    <section class="info">
+      <div class="device" id="deviceName">Яндекс Станция</div>
+      <h1 id="title">Ничего не играет</h1>
+      <div class="artist" id="artist">Скажите «Алиса, включи музыку»</div>
+
+      <div class="progress">
+        <div class="bar"><div id="fill"></div></div>
+        <div class="times"><span id="pos">0:00</span><span id="dur">0:00</span></div>
+      </div>
+
+      <div class="controls">
+        <button class="round" id="prev" aria-label="Предыдущий трек">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h2.2v14H6zM19.5 5.6v12.8c0 .8-.9 1.3-1.6.8l-8.4-6.4a1 1 0 0 1 0-1.6l8.4-6.4c.7-.5 1.6 0 1.6.8z"/></svg>
+        </button>
+        <button class="round primary" id="play" aria-label="Играть или пауза">
+          <svg id="icoPlay" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.3v13.4c0 .9 1 1.4 1.7.9l10-6.7a1.1 1.1 0 0 0 0-1.8l-10-6.7A1.1 1.1 0 0 0 8 5.3z"/></svg>
+          <svg id="icoPause" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M7 5h3.2v14H7zM13.8 5H17v14h-3.2z"/></svg>
+        </button>
+        <button class="round" id="next" aria-label="Следующий трек">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.8 5H18v14h-2.2zM4.5 5.6v12.8c0 .8.9 1.3 1.6.8l8.4-6.4a1 1 0 0 0 0-1.6L6.1 4.8c-.7-.5-1.6 0-1.6.8z"/></svg>
+        </button>
+        <button class="round" id="mic" aria-label="Голосовая команда">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="3" width="6" height="11" rx="3"></rect>
+            <path d="M5 11a7 7 0 0 0 14 0"></path>
+            <path d="M12 18v3"></path>
+          </svg>
+        </button>
+        <button class="round" id="route" aria-label="Звук: колонка или планшет">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3.5" y="4" width="10" height="16" rx="2"></rect>
+            <path d="M17 9.5a3.5 3.5 0 0 1 0 5"></path>
+            <path d="M19.5 7a7 7 0 0 1 0 10"></path>
+          </svg>
+        </button>
+
+        <div class="volume">
+          <button class="round" id="mute" aria-label="Выключить звук">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 5 6.5 9H3v6h3.5L11 19z"></path>
+              <path d="M15.5 8.5a5 5 0 0 1 0 7"></path>
+              <path d="M18.5 6a9 9 0 0 1 0 12" id="wave2"></path>
+            </svg>
+          </button>
+          <input id="vol" type="range" min="0" max="100" value="50" aria-label="Громкость">
+        </div>
+      </div>
+      <div class="voice-hint" id="voiceHint"></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="hint"><span class="kbd">Алиса</span><span id="hintText">скажите команду — колонка ответит</span></div>
+    <div id="netInfo">—</div>
+  </footer>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="panel">
+    <button class="btn ghost close" id="closeOverlay">Закрыть</button>
+    <h2>Подключение</h2>
+    <p>Пульт работает напрямую с колонкой по локальной сети. Нужен OAuth-токен Яндекса — он хранится только на планшете.</p>
+
+    <div class="field">
+      <label>Токен доступа</label>
+      <input id="tokenInput" type="password" placeholder="вставьте access_token" autocomplete="off" spellcheck="false">
+      <div class="row">
+        <button class="btn" id="openOauth">Открыть страницу Яндекса</button>
+        <button class="btn accent" id="saveToken">Сохранить токен</button>
+      </div>
+      <p>После входа скопируйте из адресной строки значение после <b>access_token=</b> до <b>&amp;</b>.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="field">
+      <label>Колонка</label>
+      <div class="devices" id="devices"></div>
+      <div class="row">
+        <button class="btn" id="refresh">Обновить список</button>
+        <button class="btn ghost" id="showHost">IP вручную</button>
+      </div>
+    </div>
+
+    <div class="field hostblock" id="hostBlock" style="display:none">
+      <label>IP-адрес колонки</label>
+      <input id="hostInput" type="text" placeholder="192.168.1.42" autocomplete="off" spellcheck="false">
+      <div class="row">
+        <button class="btn" id="saveHost">Сохранить адрес</button>
+        <button class="btn ghost" id="autoHost">Искать автоматически</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Город для погоды</label>
+      <input id="cityInput" type="text" placeholder="определять автоматически" autocomplete="off" spellcheck="false">
+      <div class="row">
+        <button class="btn" id="saveCity">Сохранить город</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Стиль часов</label>
+      <div class="chips" id="clockChips">
+        <button class="chip" data-clock="classic">Классика</button>
+        <button class="chip" data-clock="neon">Неон</button>
+        <button class="chip" data-clock="mono">Моно</button>
+        <button class="chip" data-clock="stack">Вертикальные</button>
+        <button class="chip" data-clock="flip">Флип</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Размер часов</label>
+      <div class="chips" id="sizeChips">
+        <button class="chip" data-size="s">Мелкий</button>
+        <button class="chip" data-size="m">Средний</button>
+        <button class="chip" data-size="l">Крупный</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Расположение</label>
+      <div class="chips" id="posChips">
+        <button class="chip" data-pos="left">Слева</button>
+        <button class="chip" data-pos="center">По центру</button>
+        <button class="chip" data-pos="right">Справа</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Голос</label>
+      <div class="row">
+        <button class="btn" id="wakeBtn">Слушать «Алису» постоянно</button>
+      </div>
+      <div class="row" id="quickCmds">
+        <button class="btn" data-cmd="включи видео">Видео</button>
+        <button class="btn" data-cmd="пауза">Пауза</button>
+        <button class="btn" data-cmd="продолжи">Продолжи</button>
+        <button class="btn" data-cmd="громче">Громче</button>
+        <button class="btn" data-cmd="тише">Тише</button>
+      </div>
+      <p>Планшет слушает микрофоном и отправляет команды колонке — как будто вы сказали их Алисе.</p>
+    </div>
+
+    <div class="field">
+      <label>Команда Алисе текстом</label>
+      <input id="cmdInput" type="text" placeholder="например, включи видео" autocomplete="off" spellcheck="false">
+      <div class="row">
+        <button class="btn" id="sendCmd">Отправить</button>
+      </div>
+    </div>
+
+    <div class="statusline" id="statusline">—</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var bridge = window.Station || null;
+  var mockMode = !bridge || /[?&]mock=1/.test(location.search);
+
+  // ------------------------------------------------------------- mock
+  var mockPos = 42, mockAt = Date.now();
+  var mockState = {
+    status: "ready", error: "", tokenSet: true, deviceId: "mock-device",
+    deviceName: "Станция Мини", host: "192.168.1.42", playing: true, volume: 0.55,
+    title: "Группа крови", artist: "Кино", cover: "",
+    progress: mockPos, duration: 297, alice: "IDLE",
+    weather: { ok: true, temp: 3, code: 119, city: "Москва", manualCity: "" },
+    voice: { status: "ready", progress: 100, error: "", partial: "", listening: false, ready: true, wake: false },
+    audio: { mode: "station", error: "", playing: false, trackId: "" },
+    devices: [{ id: "mock-device", name: "Станция Мини", platform: "yandexmini_2" }]
+  };
+  var wcodeMatch = /[?&]wcode=(\d+)/.exec(location.search);
+  if (wcodeMatch) mockState.weather.code = parseInt(wcodeMatch[1], 10);
+  var mock = {
+    state: function () {
+      if (mockState.playing) mockState.progress = mockPos + (Date.now() - mockAt) / 1000;
+      if (mockState.progress > mockState.duration) mockState.progress = 0;
+      return JSON.stringify(mockState);
+    },
+    action: function (what, value) {
+      if (what === "playPause") {
+        if (mockState.playing) { mockPos = mockState.progress; mockState.playing = false; }
+        else { mockAt = Date.now(); mockState.playing = true; }
+      } else if (what === "next") { mockPos = 0; mockAt = Date.now(); mockState.title = "Звезда по имени Солнце"; }
+      else if (what === "prev") { mockPos = 0; mockAt = Date.now(); mockState.title = "Группа крови"; }
+      else if (what === "volume") { mockState.volume = parseFloat(value); }
+      else if (what === "mute") { mockState.volume = mockState.volume > 0 ? 0 : 0.55; }
+      else if (what === "audioMode") { mockState.audio.mode = value; }
+    },
+    config: function () { return JSON.stringify({ token: "mock", deviceId: "mock-device", platform: "yandexmini_2", name: "Станция Мини", host: "192.168.1.42", port: 1961 }); },
+    weatherConfig: function () { return JSON.stringify({ ok: true, manualCity: "" }); },
+    setCity: function () {},
+    voiceToggle: function () { mockState.voice.listening = !mockState.voice.listening; },
+    setWake: function (v) { mockState.voice.wake = !!v; mockState.voice.listening = !!v; },
+    sendText: function () {},
+    saveConfig: function () {},
+    oauthUrl: function () { return "https://oauth.yandex.ru/authorize?response_type=token&client_id=23cabbbdc6cd418abb4b39c32c41195d"; },
+    openUrl: function (u) { window.open(u, "_blank"); }
+  };
+  var api = mockMode ? mock : bridge;
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  // фоновая погода: капли и снежинки создаём один раз, показываем по классу
+  var skyBuilt = false;
+  var lastSky = "";
+  function buildSky() {
+    if (skyBuilt) return;
+    skyBuilt = true;
+    var legacy = document.documentElement.className.indexOf("legacy") >= 0;
+    var rain = $("rainbox"), snow = $("snowbox");
+    var nRain = legacy ? 18 : 40;
+    var nSnow = legacy ? 16 : 28;
+    var i, d;
+    for (i = 0; i < nRain; i++) {
+      d = document.createElement("div");
+      d.className = "drop";
+      d.style.left = (Math.random() * 100) + "%";
+      d.style.height = (8 + Math.random() * 10) + "vh";
+      d.style.animationDuration = (0.7 + Math.random() * 0.7) + "s";
+      d.style.animationDelay = (-Math.random() * 2) + "s";
+      d.style.opacity = (0.35 + Math.random() * 0.45).toFixed(2);
+      rain.appendChild(d);
+    }
+    for (i = 0; i < nSnow; i++) {
+      d = document.createElement("div");
+      d.className = "flake";
+      var sz = 3 + Math.random() * 3;
+      d.style.left = (Math.random() * 100) + "%";
+      d.style.width = sz + "px";
+      d.style.height = sz + "px";
+      d.style.animationDuration = (6 + Math.random() * 6) + "s";
+      d.style.animationDelay = (-Math.random() * 10) + "s";
+      d.style.opacity = (0.4 + Math.random() * 0.5).toFixed(2);
+      snow.appendChild(d);
+    }
+  }
+
+  function updateSky(kind) {
+    var k = kind || "none";
+    if (k === lastSky) return;
+    lastSky = k;
+    buildSky();
+    $("sky").className = "sky w-" + k;
+  }
+
+  var st = { status: "idle", playing: false, volume: 0.5, progress: 0, duration: 0, devices: [] };
+  var posBase = 0, posAt = 0, dragging = false, lastCover = "";
+  var username = "";
+
+  // ------------------------------------------------------------- clock
+  var MONTHS = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
+  var DAYS = ["воскресенье", "понедельник", "вторник", "среда", "четверг", "пятница", "суббота"];
+
+  function two(n) { return n < 10 ? "0" + n : "" + n; }
+
+  var clockStyle = "classic";
+  try { clockStyle = localStorage.getItem("clockStyle") || "classic"; } catch (e) { }
+  try {
+    var cq = /[?&]clock=([a-z]+)/.exec(location.search);
+    if (cq) clockStyle = cq[1];
+  } catch (e) { }
+  var lastFlip = "", lastStack = "";
+
+  function applyClockStyle() {
+    var c = $("clock");
+    c.className = "clock" + (clockStyle === "classic" ? "" : " " + clockStyle);
+    var chips = document.querySelectorAll("#clockChips .chip");
+    for (var i = 0; i < chips.length; i++) {
+      var on = chips[i].getAttribute("data-clock") === clockStyle;
+      chips[i].className = "chip" + (on ? " active" : "");
+    }
+  }
+
+  function setClockStyle(s) {
+    clockStyle = s;
+    lastFlip = "";
+    lastStack = "";
+    try { localStorage.setItem("clockStyle", s); } catch (e) { }
+    applyClockStyle();
+    tickClock();
+  }
+
+  function tickClock() {
+    var d = new Date();
+    var hh = two(d.getHours()), mm = two(d.getMinutes());
+    var c = $("clock");
+    if (clockStyle === "mono") {
+      c.textContent = hh + ":" + mm + ":" + two(d.getSeconds());
+    } else if (clockStyle === "stack") {
+      var sk = hh + ":" + mm;
+      if (sk !== lastStack) {
+        lastStack = sk;
+        c.innerHTML = hh + '<span class="stack-m">' + mm + "</span>";
+      }
+    } else if (clockStyle === "flip") {
+      var fk = hh + mm;
+      if (fk !== lastFlip) {
+        lastFlip = fk;
+        c.innerHTML = '<span class="flipcard">' + hh + '</span><span class="flipsep">:</span><span class="flipcard">' + mm + "</span>";
+      }
+    } else {
+      c.textContent = hh + ":" + mm;
+    }
+    $("date").textContent = DAYS[d.getDay()] + ", " + d.getDate() + " " + MONTHS[d.getMonth()];
+  }
+  applyClockStyle();
+  setInterval(tickClock, 1000);
+  tickClock();
+
+  var clockChips = document.querySelectorAll("#clockChips .chip");
+  for (var ci = 0; ci < clockChips.length; ci++) {
+    clockChips[ci].onclick = function () {
+      setClockStyle(this.getAttribute("data-clock"));
+    };
+  }
+
+  var clockSize = "m", clockPos = "left";
+  try { clockSize = localStorage.getItem("clockSize") || "m"; } catch (e) { }
+  try { clockPos = localStorage.getItem("clockPos") || "left"; } catch (e) { }
+  try {
+    var sq = /[?&]size=([a-z]+)/.exec(location.search);
+    if (sq) clockSize = sq[1];
+    var pq = /[?&]pos=([a-z]+)/.exec(location.search);
+    if (pq) clockPos = pq[1];
+  } catch (e) { }
+
+  function markChips(id, attr, val) {
+    var list = document.querySelectorAll("#" + id + " .chip");
+    for (var i = 0; i < list.length; i++) {
+      var on = list[i].getAttribute(attr) === val;
+      list[i].className = "chip" + (on ? " active" : "");
+    }
+  }
+
+  function applyLayout() {
+    var b = document.body;
+    if (b) {
+      var cls = (b.className || "").replace(/\bsize-[a-z]+\b/g, "").replace(/\bpos-[a-z]+\b/g, "");
+      cls = cls.replace(/\s+/g, " ").replace(/^\s+|\s+$/g, "");
+      b.className = (cls ? cls + " " : "") + "size-" + clockSize + " pos-" + clockPos;
+    }
+    markChips("sizeChips", "data-size", clockSize);
+    markChips("posChips", "data-pos", clockPos);
+  }
+
+  function setClockSize(s) {
+    clockSize = s;
+    try { localStorage.setItem("clockSize", s); } catch (e) { }
+    applyLayout();
+  }
+
+  function setClockPos(p) {
+    clockPos = p;
+    try { localStorage.setItem("clockPos", p); } catch (e) { }
+    applyLayout();
+  }
+
+  applyLayout();
+
+  var sizeChips = document.querySelectorAll("#sizeChips .chip");
+  for (var si = 0; si < sizeChips.length; si++) {
+    sizeChips[si].onclick = function () {
+      setClockSize(this.getAttribute("data-size"));
+    };
+  }
+  var posChips = document.querySelectorAll("#posChips .chip");
+  for (var pi = 0; pi < posChips.length; pi++) {
+    posChips[pi].onclick = function () {
+      setClockPos(this.getAttribute("data-pos"));
+    };
+  }
+
+  // ------------------------------------------------------------- state
+  function poll() {
+    var raw;
+    try { raw = api.state(); } catch (e) { raw = ""; }
+    if (raw) {
+      try {
+        var next = JSON.parse(raw);
+        if (next.status === "ready" || next.title || next.playing) { }
+        st = next;
+      } catch (e) { }
+    }
+    render();
+    setTimeout(poll, 250);
+  }
+
+  function fmt(sec) {    sec = Math.max(0, Math.floor(sec || 0));
+    var m = Math.floor(sec / 60), s = sec % 60;
+    if (m >= 60) { var h = Math.floor(m / 60); return h + ":" + two(m % 60) + ":" + two(s); }
+    return m + ":" + two(s);
+  }
+
+  function currentPos() {
+    if (!st.playing) return st.progress || 0;
+    var p = (st.progress || 0) + (Date.now() - posAt) / 1000;
+    if (st.duration && p > st.duration) p = st.duration;
+    return p;
+  }
+
+  var RAIN = [176, 263, 266, 293, 296, 299, 302, 305, 308, 353, 356, 359];
+  var SNOW = [179, 182, 185, 227, 230, 320, 323, 326, 329, 332, 335, 338, 368, 371];
+
+  function weatherKind(code) {
+    if (code === 113) return "sun";
+    if (code === 116) return "partly";
+    if (code === 119 || code === 122) return "cloud";
+    if (code === 143 || code === 248 || code === 260) return "fog";
+    if (RAIN.indexOf(code) >= 0) return "rain";
+    if (SNOW.indexOf(code) >= 0) return "snow";
+    if (code === 200 || code === 386 || code === 389) return "thunder";
+    return "cloud";
+  }
+
+  var SCENES = {
+    sun: '<svg viewBox="0 0 24 24" fill="none" stroke="#ffd60a" stroke-width="1.5" stroke-linecap="round">' +
+      '<g class="rays"><path d="M12 2.6v2.1M12 19.3v2.1M2.6 12h2.1M19.3 12h2.1M5.2 5.2l1.5 1.5M17.3 17.3l1.5 1.5M18.8 5.2l-1.5 1.5M6.7 17.3l-1.5 1.5"/></g>' +
+      '<circle cx="12" cy="12" r="4.3" fill="#ffd60a" stroke="none"/></svg>',
+    partly: '<svg viewBox="0 0 24 24" fill="none" stroke-linecap="round">' +
+      '<g stroke="#ffd60a" stroke-width="1.4"><circle cx="8.6" cy="8.6" r="3" fill="#ffd60a" stroke="none"/>' +
+      '<path d="M8.6 2.6v1.5M2.6 8.6h1.5M4.3 4.3l1.1 1.1M12.9 4.3l-1.1 1.1" opacity=".9"/></g>' +
+      '<path class="cloud" d="M8.4 18.4h8.4a2.9 2.9 0 0 0 .2-5.8 4.3 4.3 0 0 0-8.2 1.1 2.5 2.5 0 0 0-.4 4.7z" fill="rgba(255,255,255,.14)" stroke="rgba(255,255,255,.85)" stroke-width="1.2"/></svg>',
+    cloud: '<svg viewBox="0 0 24 24" fill="none">' +
+      '<path class="cloud" d="M6.6 15.6h10a3.1 3.1 0 0 0 .2-6.2 4.8 4.8 0 0 0-9.2 1.2 2.7 2.7 0 0 0-1 5z" fill="rgba(255,255,255,.12)" stroke="rgba(255,255,255,.82)" stroke-width="1.3"/>' +
+      '<path class="cloud2" d="M9.4 19.9h7.4a2.3 2.3 0 0 0 .1-4.6 3.6 3.6 0 0 0-6.9 1 2 2 0 0 0-.6 3.6z" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.4)" stroke-width="1.1"/></svg>',
+    rain: '<svg viewBox="0 0 24 24" fill="none">' +
+      '<path d="M6.8 14.6h9.8a3 3 0 0 0 .2-6 4.6 4.6 0 0 0-8.9 1.2 2.6 2.6 0 0 0-1.1 4.8z" fill="rgba(255,255,255,.12)" stroke="rgba(255,255,255,.85)" stroke-width="1.2"/>' +
+      '<g stroke="#7cc4ff" stroke-width="1.7" stroke-linecap="round">' +
+      '<path class="drop" style="animation-delay:-.1s" d="M8.7 16.7l-.6 2.1"/>' +
+      '<path class="drop" style="animation-delay:-.6s" d="M12 16.7l-.6 2.1"/>' +
+      '<path class="drop" style="animation-delay:-1.1s" d="M15.3 16.7l-.6 2.1"/></g></svg>',
+    snow: '<svg viewBox="0 0 24 24" fill="none">' +
+      '<path d="M6.8 14.6h9.8a3 3 0 0 0 .2-6 4.6 4.6 0 0 0-8.9 1.2 2.6 2.6 0 0 0-1.1 4.8z" fill="rgba(255,255,255,.12)" stroke="rgba(255,255,255,.85)" stroke-width="1.2"/>' +
+      '<g fill="#dff3ff"><circle class="flake" style="animation-delay:-.2s" cx="8.7" cy="17.6" r="1"/>' +
+      '<circle class="flake" style="animation-delay:-1.2s" cx="12" cy="17.6" r="1"/>' +
+      '<circle class="flake" style="animation-delay:-2.2s" cx="15.3" cy="17.6" r="1"/></g></svg>',
+    thunder: '<svg viewBox="0 0 24 24" fill="none">' +
+      '<path d="M6.8 14.2h9.8a3 3 0 0 0 .2-6 4.6 4.6 0 0 0-8.9 1.2 2.6 2.6 0 0 0-1.1 4.8z" fill="rgba(255,255,255,.12)" stroke="rgba(255,255,255,.85)" stroke-width="1.2"/>' +
+      '<path class="bolt" d="M12.7 14.9l-2.6 4h2l-1 2.8 3.1-4.2h-1.9l1.2-2.6z" fill="#ffd60a"/></svg>',
+    fog: '<svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="1.5" stroke-linecap="round">' +
+      '<path class="mist" style="animation-delay:-.2s" d="M4.2 9.4h13.2"/>' +
+      '<path class="mist" style="animation-delay:-1.2s" d="M6.4 13h13.4"/>' +
+      '<path class="mist" style="animation-delay:-2.2s" d="M4.8 16.6h10.8"/></svg>'
+  };
+
+  var lastWeatherKind = "";
+
+  function render() {
+    // status pill
+    var map = {
+      ready: ["На связи", "ready"],
+      connecting: ["Подключаюсь…", "busy"],
+      discovering: ["Ищу колонку…", "busy"],
+      loading: ["Загружаю колонки…", "busy"],
+      no_host: ["Колонка не в сети", "err"],
+      no_token: ["Нужен токен", "err"],
+      bad_token: ["Токен не подошёл", "err"],
+      no_device: ["Выберите колонку", "err"],
+      error: ["Ошибка", "err"],
+      idle: ["Ожидание", ""]
+    };
+    var m = map[st.status] || [st.status, ""];
+    $("statusText").textContent = m[0];
+    $("dot").className = "dot " + m[1];
+
+    var w = st.weather || {};
+    if (w.ok) {
+      $("weather").style.display = "flex";
+      var kind = weatherKind(w.code);
+      updateSky(kind);
+      if (kind !== lastWeatherKind) {
+        lastWeatherKind = kind;
+        $("wIco").innerHTML = SCENES[kind] || SCENES.cloud;
+      }
+      var t = w.temp > 0 ? "+" + w.temp : "" + w.temp;
+      $("wText").textContent = t + "° · " + (w.city || "");
+    } else {
+      $("weather").style.display = "none";
+      updateSky("none");
+    }
+
+    var voice = st.voice || {};
+    $("mic").className = "round" + (voice.listening ? " live" : "");
+    var vh = "";
+    if (voice.status === "loading" && voice.pending) {
+      vh = "Готовлю модель распознавания…";
+    } else if (voice.listening) {
+      vh = "Слушаю…" + (voice.partial ? " " + voice.partial : "");
+    } else if (voice.wake) {
+      vh = "Жду «Алису»";
+    } else if (voice.error) {
+      vh = voice.error;
+    }
+    var audio = st.audio || {};
+    $("route").className = "round" + (audio.mode === "tablet" ? " active" : "");
+    if (!vh && audio.mode === "tablet") vh = "Звук на планшете";
+    if (!vh && audio.error) vh = audio.error;
+    $("voiceHint").textContent = vh;
+    if (overlayOpen) {
+      $("wakeBtn").textContent = voice.wake
+        ? "Выключить постоянное слушание"
+        : "Слушать «Алису» постоянно";
+    }
+
+    $("deviceName").textContent = st.deviceName || "Яндекс Станция";
+    $("title").textContent = st.title || "Ничего не играет";
+    $("artist").textContent = st.artist || (st.playing ? "" : "Скажите «Алиса, включи музыку»");
+
+    // progress
+    var pos = currentPos();
+    var dur = st.duration || 0;
+    $("fill").style.width = dur ? Math.min(100, (pos / dur) * 100) + "%" : "0%";
+    $("pos").textContent = fmt(pos);
+    $("dur").textContent = fmt(dur);
+
+    // play icon
+    $("icoPlay").style.display = st.playing ? "none" : "";
+    $("icoPause").style.display = st.playing ? "" : "none";
+
+    // cover
+    var cover = st.cover || "";
+    if (cover !== lastCover) {
+      lastCover = cover;
+      if (cover) {
+        var img = $("cover");
+        img.onload = function () { img.style.display = "block"; $("ph").style.display = "none"; };
+        img.onerror = function () { img.style.display = "none"; $("ph").style.display = "grid"; };
+        img.src = cover;
+      } else {
+        $("cover").style.display = "none";
+        $("ph").style.display = "grid";
+      }
+    }
+
+    // volume
+    if (!dragging) {
+      var v = Math.round((st.volume || 0) * 100);
+      $("vol").value = v;
+      try { $("vol").style.setProperty("--v", v + "%"); } catch (e) { }
+    }
+
+    // footer
+    $("netInfo").textContent = st.host ? (st.deviceName || "колонка") + " · " + st.host : "локальная сеть";
+
+    // settings status line
+    if (overlayOpen) {
+      var line = "статус: " + st.status;
+      if (st.error) line += "\nошибка: " + st.error;
+      if (st.host) line += "\nадрес: " + st.host + ":1961";
+      if (st.alice) line += "\nалиса: " + st.alice;
+      $("statusline").textContent = line;
+      renderDevices();
+    }
+  }
+
+  // ------------------------------------------------------------- settings
+  var overlayOpen = false;
+  function openOverlay() {
+    overlayOpen = true;
+    $("overlay").classList.add("open");
+    try {
+      var cfg = JSON.parse(api.config());
+      if (cfg.token) $("tokenInput").value = cfg.token;
+      if (cfg.host) $("hostInput").value = cfg.host;
+      if (api.weatherConfig) {
+        var wc = JSON.parse(api.weatherConfig());
+        if (wc.manualCity) $("cityInput").value = wc.manualCity;
+      }
+    } catch (e) { }
+  }
+  function closeOverlay() {
+    overlayOpen = false;
+    $("overlay").classList.remove("open");
+  }
+
+  var renderedDevices = "";
+  function renderDevices() {
+    var list = st.devices || [];
+    var key = JSON.stringify([list, st.deviceId, st.deviceName, st.host]);
+    if (key === renderedDevices) return;
+    renderedDevices = key;
+    var box = $("devices");
+    box.innerHTML = "";
+    if (!list.length) {
+      if (st.deviceId) {
+        var cur = document.createElement("div");
+        cur.className = "dev";
+        cur.innerHTML = '<div><div class="nm"></div><div class="pl"></div></div><div class="go">Подключено</div>';
+        cur.querySelector(".nm").textContent = st.deviceName || "Колонка";
+        cur.querySelector(".pl").textContent = (st.host || "") + (st.host ? ":1961" : "");
+        box.appendChild(cur);
+      } else {
+        var empty = document.createElement("div");
+        empty.className = "dev";
+        empty.innerHTML = '<div><div class="nm">Колонки не найдены</div><div class="pl">проверьте токен и нажмите «Обновить список»</div></div>';
+        box.appendChild(empty);
+      }
+      return;
+    }
+    list.forEach(function (d) {
+      var el = document.createElement("div");
+      el.className = "dev";
+      var pid = d.id || d.device_id || "";
+      var nm = d.name || "Станция";
+      var pl = d.platform || "";
+      el.innerHTML = '<div><div class="nm"></div><div class="pl"></div></div><div class="go">Подключить</div>';
+      el.querySelector(".nm").textContent = nm;
+      el.querySelector(".pl").textContent = pl + (pid ? " · " + pid : "");
+      el.addEventListener("click", function () {
+        api.saveConfig(JSON.stringify({ deviceId: pid, platform: pl, name: nm, host: "" }));
+        closeOverlay();
+      });
+      box.appendChild(el);
+    });
+  }
+
+  // ------------------------------------------------------------- events
+  $("gear").addEventListener("click", openOverlay);
+  $("closeOverlay").addEventListener("click", function () {
+    if (st.tokenSet === false) return; // без токена не закрываем
+    closeOverlay();
+  });
+  $("overlay").addEventListener("click", function (e) {
+    if (e.target === $("overlay") && st.tokenSet !== false) closeOverlay();
+  });
+  $("openOauth").addEventListener("click", function () { api.openUrl(api.oauthUrl()); });
+  $("saveToken").addEventListener("click", function () {
+    var t = $("tokenInput").value.trim();
+    if (!t) return;
+    api.saveConfig(JSON.stringify({ token: t }));
+    api.action("refresh", "");
+    setTimeout(function () { if (st.status === "no_token") openOverlay(); }, 400);
+  });
+  $("refresh").addEventListener("click", function () { api.action("refresh", ""); });
+  $("showHost").addEventListener("click", function () {
+    var block = $("hostBlock");
+    block.style.display = block.style.display === "none" ? "block" : "none";
+  });
+  $("saveHost").addEventListener("click", function () {
+    var h = $("hostInput").value.trim();
+    if (!h) return;
+    api.saveConfig(JSON.stringify({ host: h }));
+  });
+  $("saveCity").addEventListener("click", function () {
+    if (api.setCity) api.setCity($("cityInput").value.trim());
+  });
+  $("autoHost").addEventListener("click", function () {
+    api.saveConfig(JSON.stringify({ host: "" }));
+    $("hostInput").value = "";
+  });
+
+  $("mic").addEventListener("click", function () {
+    if (api.voiceToggle) api.voiceToggle();
+  });
+  $("route").addEventListener("click", function () {
+    var cur = (st.audio && st.audio.mode) || "station";
+    api.action("audioMode", cur === "tablet" ? "station" : "tablet");
+  });
+  $("wakeBtn").addEventListener("click", function () {
+    if (api.setWake) api.setWake(!(st.voice && st.voice.wake));
+  });
+  $("sendCmd").addEventListener("click", function () {
+    var v = $("cmdInput").value.trim();
+    if (v && api.sendText) api.sendText(v);
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-cmd]"), function (b) {
+    b.addEventListener("click", function () {
+      if (api.sendText) api.sendText(b.getAttribute("data-cmd"));
+    });
+  });
+  $("play").addEventListener("click", function () { api.action("playPause", ""); });
+  $("next").addEventListener("click", function () { api.action("next", ""); });
+  $("prev").addEventListener("click", function () { api.action("prev", ""); });
+  $("mute").addEventListener("click", function () { api.action("mute", ""); });
+
+  var vol = $("vol");
+  vol.addEventListener("input", function () {
+    dragging = true;
+    try { vol.style.setProperty("--v", vol.value + "%"); } catch (e) { }
+  });
+  vol.addEventListener("change", function () {
+    dragging = false;
+    api.action("volume", String(vol.value / 100));
+  });
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === " " || e.code === "Space") { e.preventDefault(); api.action("playPause", ""); }
+    else if (e.key === "ArrowRight") api.action("next", "");
+    else if (e.key === "ArrowLeft") api.action("prev", "");
+    else if (e.key === "ArrowUp") api.action("volume", String(Math.min(1, (st.volume || 0) + 0.1)));
+    else if (e.key === "ArrowDown") api.action("volume", String(Math.max(0, (st.volume || 0) - 0.1)));
+  });
+
+  // ------------------------------------------------------------- start
+  posAt = Date.now();
+  poll();
+  setTimeout(function () {
+    if (!st.tokenSet) openOverlay();
+    if (/[?&]screen=settings/.test(location.search)) openOverlay();
+  }, 600);
+})();
+</script>
+</body>
+</html>

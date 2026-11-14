@@ -1,0 +1,9 @@
+Package: ru.dsh.stationremote
+Name: StationRemote
+Version: 1.0
+Architecture: iphoneos-arm
+Description: Remote control for Yandex Station
+Maintainer: dsh
+Author: dsh
+Section: Utilities
+Depends: firmware (>= 9.0)
