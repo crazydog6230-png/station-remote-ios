@@ -1,4 +1,4 @@
-TARGET := iphone:clang:9.3:9.0
+﻿TARGET := iphone:clang:10.3:9.0
 ARCHS := armv7 arm64
 
 include $(THEOS)/makefiles/common.mk
@@ -11,3 +11,4 @@ StationRemote_CFLAGS = -fobjc-arc
 StationRemote_RESOURCE_FILES = index.html legacy.css
 
 include $(THEOS_MAKE_PATH)/application.mk
+
