@@ -1,27 +1,31 @@
 #import "RootViewController.h"
-#import <WebKit/WebKit.h>
+#import <UIKit/UIKit.h>
 #import "Glagol.h"
 #import "Weather.h"
 
 static NSString *const kBridgeJS =
 @"(function(){"
- "window.api = {"
- "  state: function(){ return JSON.stringify(window.__state || {}); },"
- "  config: function(){ return JSON.stringify(window.__config || {}); },"
- "  weatherConfig: function(){ return JSON.stringify(window.__weatherConfig || {}); },"
- "  saveConfig: function(s){ window.webkit.messageHandlers.cmd.postMessage({t:'save', v:s}); },"
- "  action: function(a, v){ window.webkit.messageHandlers.cmd.postMessage({t:'act', a:a, v:v || ''}); },"
- "  sendText: function(s){ window.webkit.messageHandlers.cmd.postMessage({t:'text', v:s}); },"
- "  setCity: function(c){ window.webkit.messageHandlers.cmd.postMessage({t:'city', v:c}); },"
- "  setWake: function(w){},"
- "  voiceToggle: function(){},"
- "  openUrl: function(u){ window.webkit.messageHandlers.cmd.postMessage({t:'url', v:u}); },"
- "  oauthUrl: function(){ return 'https://oauth.yandex.ru/authorize?response_type=token&client_id=23cabbbdc6cd418abb4b39c32c41195d'; }"
+ "function _send(o){var f=document.createElement('iframe');f.style.display='none';"
+ "f.src='bridge://'+encodeURIComponent(JSON.stringify(o));"
+ "document.documentElement.appendChild(f);"
+ "setTimeout(function(){if(f.parentNode)f.parentNode.removeChild(f);},50);}"
+ "window.api={"
+ "state:function(){return JSON.stringify(window.__state||{});},"
+ "config:function(){return JSON.stringify(window.__config||{});},"
+ "weatherConfig:function(){return JSON.stringify(window.__weatherConfig||{});},"
+ "saveConfig:function(s){_send({t:'save',v:s});},"
+ "action:function(a,v){_send({t:'act',a:a,v:v||''});},"
+ "sendText:function(s){_send({t:'text',v:s});},"
+ "setCity:function(c){_send({t:'city',v:c});},"
+ "setWake:function(w){},"
+ "voiceToggle:function(){},"
+ "openUrl:function(u){_send({t:'url',v:u});},"
+ "oauthUrl:function(){return 'https://oauth.yandex.ru/authorize?response_type=token&client_id=23cabbbdc6cd418abb4b39c32c41195d';}"
  "};"
  "})();";
 
-@interface RootViewController () <WKScriptMessageHandler, WKNavigationDelegate>
-@property (nonatomic, strong) WKWebView *web;
+@interface RootViewController () <UIWebViewDelegate>
+@property (nonatomic, strong) UIWebView *web;
 @property (nonatomic, strong) Glagol *glagol;
 @property (nonatomic, strong) Weather *weather;
 @property (nonatomic, assign) BOOL ready;
@@ -36,26 +40,20 @@ static NSString *const kBridgeJS =
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor blackColor];
 
-    WKWebViewConfiguration *cfg = [[WKWebViewConfiguration alloc] init];
-    WKUserContentController *ucc = [[WKUserContentController alloc] init];
-    WKUserScript *script = [[WKUserScript alloc] initWithSource:kBridgeJS
-                                                 injectionTime:WKUserScriptInjectionTimeAtDocumentStart
-                                              forMainFrameOnly:YES];
-    [ucc addUserScript:script];
-    [ucc addScriptMessageHandler:self name:@"cmd"];
-    cfg.userContentController = ucc;
-
-    self.web = [[WKWebView alloc] initWithFrame:self.view.bounds configuration:cfg];
+    self.web = [[UIWebView alloc] initWithFrame:self.view.bounds];
     self.web.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    self.web.navigationDelegate = self;
+    self.web.delegate = self;
     self.web.opaque = NO;
     self.web.backgroundColor = [UIColor blackColor];
+    self.web.scalesPageToFit = NO;
+    self.web.allowsInlineMediaPlayback = YES;
+    self.web.mediaPlaybackRequiresUserAction = NO;
     [self.view addSubview:self.web];
 
     NSString *path = [[NSBundle mainBundle] pathForResource:@"index" ofType:@"html"];
     if (path) {
         NSURL *url = [NSURL fileURLWithPath:path];
-        [self.web loadFileURL:url allowingReadAccessToURL:[url URLByDeletingLastPathComponent]];
+        [self.web loadRequest:[NSURLRequest requestWithURL:url]];
     }
 
     self.glagol = [[Glagol alloc] init];
@@ -71,11 +69,18 @@ static NSString *const kBridgeJS =
 
 - (void)dealloc {
     [self.timer invalidate];
-    [[self.web configuration].userContentController removeScriptMessageHandlerForName:@"cmd"];
+    self.web.delegate = nil;
 }
 
-- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
+- (void)evalJS:(NSString *)js {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.web stringByEvaluatingJavaScriptFromString:js];
+    });
+}
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView {
     self.ready = YES;
+    [self evalJS:kBridgeJS];
     [self pushConfig];
     [self pushState];
 }
@@ -101,17 +106,29 @@ static NSString *const kBridgeJS =
     NSData *data = [NSJSONSerialization dataWithJSONObject:obj options:0 error:nil];
     if (!data) return;
     NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    NSString *js = [NSString stringWithFormat:@"window.%@ = %@;", name, json];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.web evaluateJavaScript:js completionHandler:nil];
-    });
+    [self evalJS:[NSString stringWithFormat:@"window.%@ = %@;", name, json]];
 }
 
 #pragma mark - bridge
 
-- (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
-    NSDictionary *body = message.body;
-    if (![body isKindOfClass:[NSDictionary class]]) return;
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
+    NSString *scheme = request.URL.scheme.lowercaseString;
+    if ([scheme isEqualToString:@"bridge"]) {
+        NSString *raw = request.URL.absoluteString;
+        NSRange r = [raw rangeOfString:@"bridge://"];
+        if (r.location != NSNotFound) {
+            NSString *enc = [raw substringFromIndex:r.location + r.length];
+            NSString *json = [enc stringByRemovingPercentEncoding];
+            NSData *d = [json dataUsingEncoding:NSUTF8StringEncoding];
+            NSDictionary *body = [NSJSONSerialization JSONObjectWithData:d options:0 error:nil];
+            if ([body isKindOfClass:[NSDictionary class]]) [self handleBridge:body];
+        }
+        return NO;
+    }
+    return YES;
+}
+
+- (void)handleBridge:(NSDictionary *)body {
     NSString *type = body[@"t"];
     if ([type isEqualToString:@"save"]) {
         NSString *raw = body[@"v"];
@@ -122,9 +139,7 @@ static NSString *const kBridgeJS =
             [self pushConfig];
         }
     } else if ([type isEqualToString:@"act"]) {
-        NSString *a = body[@"a"];
-        NSString *v = body[@"v"];
-        [self.glagol action:a value:v];
+        [self.glagol action:body[@"a"] value:body[@"v"]];
     } else if ([type isEqualToString:@"text"]) {
         [self.glagol sendText:body[@"v"]];
     } else if ([type isEqualToString:@"city"]) {

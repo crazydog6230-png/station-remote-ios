@@ -16,8 +16,6 @@ targets:
         excludes:
           - "Info.plist"
       - path: Resources
-    dependencies:
-      - sdk: WebKit.framework
     settings:
       base:
         INFOPLIST_FILE: Sources/Info.plist

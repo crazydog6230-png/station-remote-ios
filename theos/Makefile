@@ -6,7 +6,7 @@ include $(THEOS)/makefiles/common.mk
 APPLICATION_NAME = StationRemote
 
 StationRemote_FILES = $(wildcard Sources/*.m)
-StationRemote_FRAMEWORKS = UIKit WebKit
+StationRemote_FRAMEWORKS = UIKit
 StationRemote_CFLAGS = -fobjc-arc
 StationRemote_RESOURCE_FILES = index.html legacy.css
 
