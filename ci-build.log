@@ -3,11 +3,11 @@
 + sudo apt-get update
 Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
 Get:6 https://packages.microsoft.com/ubuntu/22.04/prod jammy InRelease [3632 B]
-Get:7 https://packages.microsoft.com/ubuntu/22.04/prod jammy/main arm64 Packages [790 kB]
 Hit:2 http://azure.archive.ubuntu.com/ubuntu jammy InRelease
 Get:3 http://azure.archive.ubuntu.com/ubuntu jammy-updates InRelease [128 kB]
 Get:4 http://azure.archive.ubuntu.com/ubuntu jammy-backports InRelease [127 kB]
 Get:5 http://azure.archive.ubuntu.com/ubuntu jammy-security InRelease [129 kB]
+Get:7 https://packages.microsoft.com/ubuntu/22.04/prod jammy/main arm64 Packages [790 kB]
 Get:8 https://packages.microsoft.com/ubuntu/22.04/prod jammy/main amd64 Packages [1066 kB]
 Get:9 http://azure.archive.ubuntu.com/ubuntu jammy-updates/main amd64 Packages [3982 kB]
 Get:10 http://azure.archive.ubuntu.com/ubuntu jammy-updates/universe amd64 Packages [1291 kB]
@@ -16,7 +16,7 @@ Get:12 http://azure.archive.ubuntu.com/ubuntu jammy-security/main Translation-en
 Get:13 http://azure.archive.ubuntu.com/ubuntu jammy-security/restricted amd64 Packages [6613 kB]
 Get:14 http://azure.archive.ubuntu.com/ubuntu jammy-security/restricted Translation-en [1272 kB]
 Get:15 http://azure.archive.ubuntu.com/ubuntu jammy-security/universe amd64 Packages [1057 kB]
-Fetched 20.7 MB in 2s (9725 kB/s)
+Fetched 20.7 MB in 2s (9824 kB/s)
 Reading package lists...
 + sudo apt-get install -y build-essential fakeroot rsync curl perl zip git wget libxml2 libncurses6 libtinfo6 libz3-dev libplist-utils
 Reading package lists...
@@ -50,7 +50,7 @@ After this operation, 137 kB of additional disk space will be used.
 Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
 Get:2 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libplist3 amd64 2.2.0-6build2 [32.1 kB]
 Get:3 http://azure.archive.ubuntu.com/ubuntu jammy/universe amd64 libplist-utils amd64 2.2.0-6build2 [7816 B]
-Fetched 39.9 kB in 0s (186 kB/s)
+Fetched 39.9 kB in 0s (360 kB/s)
 Selecting previously unselected package libplist3:amd64.
 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 264803 files and directories currently installed.)
 Preparing to unpack .../libplist3_2.2.0-6build2_amd64.deb ...
@@ -134,97 +134,70 @@ linux
 + make stage
 [1;31m> [1;3;39mMaking all for application StationRemote…[m
 [0;35m==> [1;39mCopying resource files into the application wrapper…[m
-[0;32m==> [1;39mCompiling Sources/AppDelegate.m (armv7)…[m
-[0;32m==> [1;39mCompiling Sources/AppDelegate.m (arm64)…[m
 [0;32m==> [1;39mCompiling Sources/Glagol.m (armv7)…[m
-[0;32m==> [1;39mCompiling Sources/WS.m (armv7)…[m
-[0;32m==> [1;39mCompiling Sources/Weather.m (armv7)…[m
-[0;32m==> [1;39mCompiling Sources/RootViewController.m (arm64)…[m
 [0;32m==> [1;39mCompiling Sources/Glagol.m (arm64)…[m
-[0;32m==> [1;39mCompiling Sources/main.m (armv7)…[m
+[0;32m==> [1;39mCompiling Sources/RootViewController.m (arm64)…[m
+[0;32m==> [1;39mCompiling Sources/WS.m (arm64)…[m
 [0;32m==> [1;39mCompiling Sources/RootViewController.m (armv7)…[m
 [0;32m==> [1;39mCompiling Sources/Weather.m (arm64)…[m
+[0;32m==> [1;39mCompiling Sources/AppDelegate.m (armv7)…[m
+[0;32m==> [1;39mCompiling Sources/AppDelegate.m (arm64)…[m
 [0;32m==> [1;39mCompiling Sources/main.m (arm64)…[m
-[0;32m==> [1;39mCompiling Sources/WS.m (arm64)…[m
-[0;33m==> [1;39mLinking application StationRemote (armv7)…[m
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/libobjc.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/System/Library/Frameworks//CoreFoundation.framework/CoreFoundation.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/System/Library/Frameworks//Foundation.framework/Foundation.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/libSystem.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/System/Library/Frameworks//UIKit.framework/UIKit.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/System/Library/Frameworks//CFNetwork.framework/CFNetwork.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/System/Library/Frameworks//Metal.framework/Metal.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/System/Library/Frameworks//OpenGLES.framework/OpenGLES.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/System/Library/Frameworks//CoreVideo.framework/CoreVideo.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/System/Library/Frameworks//CoreImage.framework/CoreImage.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/System/Library/Frameworks//Security.framework/Security.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/System/Library/Frameworks//QuartzCore.framework/QuartzCore.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/System/Library/Frameworks//CoreText.framework/CoreText.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/System/Library/Frameworks//CoreGraphics.framework/CoreGraphics.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libcache.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libcommonCrypto.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libcompiler_rt.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libcopyfile.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libcorecrypto.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libdispatch.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libdyld.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/liblaunch.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libmacho.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libremovefile.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_asl.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_blocks.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_c.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_configuration.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_containermanager.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_coreservices.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_coretls.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_dnssd.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_info.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_kernel.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_m.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_malloc.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_network.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_networkextension.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_notify.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_platform.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_pthread.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_sandbox.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_symptoms.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_trace.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libunwind.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libvminterpose.tbd) built for iOS Simulator
-ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libxpc.tbd) built for iOS Simulator
-Undefined symbols for architecture armv7:
-  "__Unwind_SjLj_Register", referenced from:
-      -[Glagol connect] in Glagol.m.2ba75fdd.o
-      -[Glagol fetchDevices] in Glagol.m.2ba75fdd.o
-      -[RootViewController viewDidLoad] in RootViewController.m.2ba75fdd.o
-      -[Weather fetch] in Weather.m.2ba75fdd.o
-  "__Unwind_SjLj_Resume", referenced from:
-      -[Glagol connect] in Glagol.m.2ba75fdd.o
-      -[Glagol fetchDevices] in Glagol.m.2ba75fdd.o
-      -[RootViewController viewDidLoad] in RootViewController.m.2ba75fdd.o
-      -[Weather fetch] in Weather.m.2ba75fdd.o
-  "__Unwind_SjLj_Unregister", referenced from:
-      -[Glagol connect] in Glagol.m.2ba75fdd.o
-      -[Glagol fetchDevices] in Glagol.m.2ba75fdd.o
-      -[RootViewController viewDidLoad] in RootViewController.m.2ba75fdd.o
-      -[Weather fetch] in Weather.m.2ba75fdd.o
-  "___fixdfdi", referenced from:
-      -[Glagol stateDictionary] in Glagol.m.2ba75fdd.o
-      -[WS sendCommand:] in WS.m.2ba75fdd.o
-  "_objc_msgSend_stret", referenced from:
-      -[AppDelegate application:didFinishLaunchingWithOptions:] in AppDelegate.m.2ba75fdd.o
-      -[RootViewController viewDidLoad] in RootViewController.m.2ba75fdd.o
-      -[RootViewController webView:shouldStartLoadWithRequest:navigationType:] in RootViewController.m.2ba75fdd.o
-      -[WS process] in WS.m.2ba75fdd.o
-ld: symbol(s) not found for architecture armv7
-clang-13: [0;1;31merror: [0m[1mlinker command failed with exit code 1 (use -v to see invocation)[0m
-make[3]: *** [/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/makefiles/instance/application.mk:50: /home/runner/work/station-remote-ios/station-remote-ios/theos/.theos/obj/debug/armv7/StationRemote.app/StationRemote] Error 1
-make[2]: *** [/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/makefiles/instance/application.mk:50: /home/runner/work/station-remote-ios/station-remote-ios/theos/.theos/obj/debug/armv7/StationRemote.app/StationRemote] Error 2
-make[2]: *** Waiting for unfinished jobs....
+[0;32m==> [1;39mCompiling Sources/Weather.m (armv7)…[m
+[0;32m==> [1;39mCompiling Sources/main.m (armv7)…[m
+[0;32m==> [1;39mCompiling Sources/WS.m (armv7)…[m
 [0;33m==> [1;39mLinking application StationRemote (arm64)…[m
+ld: warning: -undefined dynamic_lookup is deprecated on iOS
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/libobjc.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/System/Library/Frameworks//Foundation.framework/Foundation.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/System/Library/Frameworks//CoreFoundation.framework/CoreFoundation.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/libSystem.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/System/Library/Frameworks//UIKit.framework/UIKit.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/System/Library/Frameworks//CFNetwork.framework/CFNetwork.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/System/Library/Frameworks//Metal.framework/Metal.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/System/Library/Frameworks//OpenGLES.framework/OpenGLES.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/System/Library/Frameworks//CoreVideo.framework/CoreVideo.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/System/Library/Frameworks//CoreImage.framework/CoreImage.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/System/Library/Frameworks//Security.framework/Security.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/System/Library/Frameworks//QuartzCore.framework/QuartzCore.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/System/Library/Frameworks//CoreText.framework/CoreText.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/System/Library/Frameworks//CoreGraphics.framework/CoreGraphics.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libcache.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libcommonCrypto.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libcompiler_rt.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libcopyfile.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libcorecrypto.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libdispatch.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libdyld.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/liblaunch.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libmacho.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libremovefile.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_asl.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_blocks.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_c.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_configuration.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_containermanager.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_coreservices.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_coretls.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_dnssd.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_info.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_kernel.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_m.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_malloc.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_network.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_networkextension.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_notify.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_platform.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_pthread.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_sandbox.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_symptoms.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libsystem_trace.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libunwind.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libvminterpose.tbd) built for iOS Simulator
+ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libxpc.tbd) built for iOS Simulator
+[0;33m==> [1;39mLinking application StationRemote (armv7)…[m
+ld: warning: -undefined dynamic_lookup is deprecated on iOS
 ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/libobjc.tbd) built for iOS Simulator
 ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/System/Library/Frameworks//CoreFoundation.framework/CoreFoundation.tbd) built for iOS Simulator
 ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/System/Library/Frameworks//Foundation.framework/Foundation.tbd) built for iOS Simulator
@@ -273,5 +246,29 @@ ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/stati
 ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libunwind.tbd) built for iOS Simulator
 ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libvminterpose.tbd) built for iOS Simulator
 ld: warning: building for iOS, but linking in .tbd file (/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/sdks/iPhoneOS10.3.sdk/usr/lib/system/libxpc.tbd) built for iOS Simulator
-make[1]: *** [/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/makefiles/instance/application.mk:41: internal-application-all_] Error 2
-make: *** [/home/runner/work/station-remote-ios/station-remote-ios/theos-toolchain/makefiles/master/rules.mk:146: StationRemote.all.application.variables] Error 2
+[0;34m==> [1;39mMerging application StationRemote…[m
+[0;34m==> [1;39mSigning StationRemote…[m
+[1;31m> [1;3;39mMaking stage for application StationRemote…[m
++ find .theos -maxdepth 5 -name '*.app' -print
+.theos/obj/debug/armv7/StationRemote.app
+.theos/obj/debug/StationRemote.app
+.theos/obj/debug/arm64/StationRemote.app
+.theos/_/Applications/StationRemote.app
+++ find theos/.theos/_ -maxdepth 5 -name StationRemote.app
+++ head -n1
++ APP=theos/.theos/_/Applications/StationRemote.app
++ echo 'app: theos/.theos/_/Applications/StationRemote.app'
+app: theos/.theos/_/Applications/StationRemote.app
++ test -n theos/.theos/_/Applications/StationRemote.app
++ mkdir -p build/Payload
++ cp -R theos/.theos/_/Applications/StationRemote.app build/Payload/
++ cd build
++ zip -r StationRemote.ipa Payload
+  adding: Payload/ (stored 0%)
+  adding: Payload/StationRemote.app/ (stored 0%)
+  adding: Payload/StationRemote.app/index.html (deflated 74%)
+  adding: Payload/StationRemote.app/legacy.css (deflated 82%)
+  adding: Payload/StationRemote.app/Info.plist (deflated 65%)
+  adding: Payload/StationRemote.app/StationRemote (deflated 76%)
++ ls -lh StationRemote.ipa
+-rw-r--r-- 1 runner runner 96K Nov 15 10:21 StationRemote.ipa
