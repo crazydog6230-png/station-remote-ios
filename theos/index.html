@@ -209,6 +209,16 @@
   .chip.active { background: #ffd60a; border-color: #ffd60a; color: #1b1400; font-weight: 600; }
   .date { margin-top: 8px; color: var(--muted); font-size: clamp(15px, 2vh, 21px); letter-spacing: .02em; }
   .weather { margin-top: 14px; display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: clamp(17px, 2.4vh, 26px); }
+  .radio-pill {
+    display: inline-flex; align-items: center; margin-top: 14px;
+    padding: 10px 20px 10px 16px; border-radius: 999px; border: 0;
+    color: #fff; font: inherit; font-size: 16px; cursor: pointer;
+    background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 58%, #f97316 100%);
+    box-shadow: 0 10px 28px rgba(168, 60, 220, .38), inset 0 1px 0 rgba(255, 255, 255, .28);
+    transition: transform .15s ease;
+  }
+  .radio-pill svg { width: 22px; height: 22px; margin-right: 8px; }
+  .radio-pill:active { transform: scale(.95); }
   .wicon { width: 60px; height: 60px; flex: none; display: block; }
   .wicon svg { width: 100%; height: 100%; overflow: visible; }
   .wicon .rays { transform-box: view-box; transform-origin: 12px 12px; animation: w-spin 26s linear infinite; }
@@ -485,6 +495,16 @@
       <div class="weather" id="weather" style="display:none">
         <span class="wicon" id="wIco"></span><span id="wText"></span>
       </div>
+      <button class="radio-pill" id="radioBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round">
+          <circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"></circle>
+          <path d="M7.8 7.8a6 6 0 0 0 0 8.4"></path>
+          <path d="M16.2 7.8a6 6 0 0 1 0 8.4"></path>
+          <path d="M5.2 5.2a9.6 9.6 0 0 0 0 13.6"></path>
+          <path d="M18.8 5.2a9.6 9.6 0 0 1 0 13.6"></path>
+        </svg>
+        <span>Радио</span>
+      </button>
     </div>
     <div class="topright">
       <div class="pill"><span class="dot" id="dot"></span><span id="statusText">Запуск…</span></div>
@@ -1262,6 +1282,7 @@
   }
   $("waveBtn").addEventListener("click", function () { quickCommand("включи мою волну"); });
   $("tuneBtn").addEventListener("click", function () { quickCommand("включи мою музыку"); });
+  $("radioBtn").addEventListener("click", function () { quickCommand("включи радио"); });
   $("likeBtn").addEventListener("click", function () { quickCommand("лайк"); });
   $("dislikeBtn").addEventListener("click", function () { quickCommand("дизлайк"); });
   $("minBtn").addEventListener("click", function () { api.action("minimize", ""); });
