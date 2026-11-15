@@ -209,6 +209,9 @@
   .chip.active { background: #ffd60a; border-color: #ffd60a; color: #1b1400; font-weight: 600; }
   .date { margin-top: 8px; color: var(--muted); font-size: clamp(15px, 2vh, 21px); letter-spacing: .02em; }
   .weather { margin-top: 14px; display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: clamp(17px, 2.4vh, 26px); }
+  .subrow { display: flex; align-items: center; margin-top: 12px; }
+  .subrow .weather { margin-top: 0; }
+  .subrow .radio-pill { margin-top: 0; margin-left: 12px; }
   .radio-pill {
     display: inline-flex; align-items: center; margin-top: 14px;
     padding: 10px 20px 10px 16px; border-radius: 999px; border: 0;
@@ -492,10 +495,11 @@
     <div class="timebox">
       <div class="clock" id="clock">00:00</div>
       <div class="date" id="date">—</div>
-      <div class="weather" id="weather" style="display:none">
-        <span class="wicon" id="wIco"></span><span id="wText"></span>
-      </div>
-      <button class="radio-pill" id="radioBtn">
+      <div class="subrow">
+        <div class="weather" id="weather" style="display:none">
+          <span class="wicon" id="wIco"></span><span id="wText"></span>
+        </div>
+        <button class="radio-pill" id="radioBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round">
           <circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"></circle>
           <path d="M7.8 7.8a6 6 0 0 0 0 8.4"></path>
@@ -505,6 +509,7 @@
         </svg>
         <span>Радио</span>
       </button>
+      </div>
     </div>
     <div class="topright">
       <div class="pill"><span class="dot" id="dot"></span><span id="statusText">Запуск…</span></div>

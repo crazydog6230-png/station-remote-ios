@@ -169,6 +169,9 @@ html.legacy .radio-pill {
   background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 58%, #f97316 100%) !important;
 }
 html.legacy .radio-pill svg { width: 20px !important; height: 20px !important; }
+html.legacy .subrow { display: -webkit-flex !important; display: flex !important; -webkit-align-items: center !important; align-items: center !important; }
+html.legacy .subrow .weather { margin-top: 0 !important; }
+html.legacy .subrow .radio-pill { margin-top: 0 !important; margin-left: 10px !important; }
 html.legacy .likebtn { width: 52px !important; height: 52px !important; }
 html.legacy .likebtn svg { width: 26px !important; height: 26px !important; }
 html.legacy .likebtn.dislike { background: #12161f !important; }
