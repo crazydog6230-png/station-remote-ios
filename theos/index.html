@@ -345,6 +345,25 @@
   }
   .quickbtn:active { transform: scale(.96); }
 
+  .likegroup { display: flex; align-items: center; margin-left: auto; }
+  .likebtn {
+    width: 44px; height: 44px; border-radius: 50%; margin-left: 10px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid rgba(255, 90, 120, .38);
+    background: radial-gradient(circle at 32% 26%, rgba(255, 90, 120, .38), rgba(120, 20, 50, .22));
+    color: #ff6b8b; cursor: pointer;
+    box-shadow: 0 8px 22px rgba(160, 20, 60, .25), inset 0 1px 0 rgba(255, 255, 255, .16);
+    transition: transform .15s ease;
+  }
+  .likebtn svg { width: 22px; height: 22px; }
+  .likebtn.dislike {
+    border-color: rgba(255, 255, 255, .18);
+    background: rgba(255, 255, 255, .06);
+    color: #9aa6b8;
+    box-shadow: none;
+  }
+  .likebtn:active { transform: scale(.9); }
+
   .voice-hint { min-height: 16px; margin-top: 2px; color: var(--muted); font-size: 12.5px; letter-spacing: .01em;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .volume { display: flex; align-items: center; gap: 12px; margin-left: clamp(18px, 3vw, 44px); flex: 1; max-width: 300px; min-width: 140px; }
@@ -554,6 +573,19 @@
           </svg>
           <span>Моя музыка</span>
         </button>
+        <div class="likegroup">
+          <button class="likebtn" id="likeBtn" aria-label="Лайк">
+            <svg viewBox="0 0 24 24" fill="currentColor" stroke="none">
+              <path d="M12 21s-7.2-4.6-9.6-9.2A5.6 5.6 0 0 1 12 6.2a5.6 5.6 0 0 1 9.6 5.6C19.2 16.4 12 21 12 21z"></path>
+            </svg>
+          </button>
+          <button class="likebtn dislike" id="dislikeBtn" aria-label="Дизлайк">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <path d="M12 21s-7.2-4.6-9.6-9.2A5.6 5.6 0 0 1 12 6.2a5.6 5.6 0 0 1 9.6 5.6C19.2 16.4 12 21 12 21z"></path>
+              <path d="M4 4l16 16"></path>
+            </svg>
+          </button>
+        </div>
       </div>
 
       <div class="voice-hint" id="voiceHint"></div>
@@ -1219,6 +1251,8 @@
   }
   $("waveBtn").addEventListener("click", function () { quickCommand("включи мою волну"); });
   $("tuneBtn").addEventListener("click", function () { quickCommand("включи мою музыку"); });
+  $("likeBtn").addEventListener("click", function () { quickCommand("лайк"); });
+  $("dislikeBtn").addEventListener("click", function () { quickCommand("дизлайк"); });
 
   posAt = Date.now();
   poll();
