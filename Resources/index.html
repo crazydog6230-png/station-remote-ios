@@ -251,6 +251,7 @@
     transition: background .2s, transform .12s;
   }
   .iconbtn:active { transform: scale(.93); }
+  .iconbtn.mini { width: 38px; height: 38px; color: var(--muted); }
   /* ---------- main ---------- */
   main {
     display: grid; grid-template-columns: minmax(220px, 36%) 1fr;
@@ -488,6 +489,17 @@
     </div>
     <div class="topright">
       <div class="pill"><span class="dot" id="dot"></span><span id="statusText">Запуск…</span></div>
+      <button class="iconbtn mini" id="minBtn" aria-label="Свернуть">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M5 12h14"></path>
+        </svg>
+      </button>
+      <button class="iconbtn mini" id="closeBtn" aria-label="Закрыть приложение">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M6 6l12 12"></path>
+          <path d="M18 6L6 18"></path>
+        </svg>
+      </button>
       <button class="iconbtn" id="gear" aria-label="Настройки">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3"></circle>
@@ -1253,6 +1265,12 @@
   $("tuneBtn").addEventListener("click", function () { quickCommand("включи мою музыку"); });
   $("likeBtn").addEventListener("click", function () { quickCommand("лайк"); });
   $("dislikeBtn").addEventListener("click", function () { quickCommand("дизлайк"); });
+  $("minBtn").addEventListener("click", function () { api.action("minimize", ""); });
+  $("closeBtn").addEventListener("click", function () { api.action("exit", ""); });
+  if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.cmd) {
+    $("minBtn").style.display = "none";
+    $("closeBtn").style.display = "none";
+  }
 
   posAt = Date.now();
   poll();
