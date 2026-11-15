@@ -13,7 +13,16 @@
    (должны оказаться `project.yml`, `Sources/`, `Resources/`, `.github/`).
    Через веб: *Add file → Upload files*, перетащите всё содержимое.
 
-## 2. Собрать IPA
+## Готовый IPA
+
+Собранный файл лежит в ветке **ipa** этого репозитория:
+
+`https://github.com/crazydog6230-png/station-remote-ios/raw/ipa/StationRemote.ipa`
+
+Он собран Theos с SDK 10.3 и deployment target 9.0, содержит слайсы **armv7 + arm64**
+и подписан ad-hoc (ldid). Для установки с джейлбрейком этого достаточно.
+
+## 2. Собрать IPA заново
 
 1. В репозитории откройте вкладку **Actions**.
 2. Слева выберите **ios-ipa** → **Run workflow** → **Run workflow**.
